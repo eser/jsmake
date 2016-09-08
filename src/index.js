@@ -1,15 +1,23 @@
 const events = require('events'),
     childProcess = require('child_process'),
     yargsParser = require('yargs-parser'),
-    Maester = require('maester'),
+    maester = require('maester'),
     Task = require('./Task.js');
 
 class JsMake {
     constructor() {
-        super();
-
         this.events = new events.EventEmitter();
         this.tasks = {};
+        this.logger = maester;
+    }
+
+    loadFile(filepath) {
+        const _jsmake = global.jsmake;
+
+        global.jsmake = this;
+        require(filepath);
+
+        global.jsmake = _jsmake;
     }
 
     task(name, prerequisites, promise) {
@@ -20,12 +28,18 @@ class JsMake {
         const argv = yargsParser(args); // .replace('  ', ' ')
 
         if (argv._.length === 0) {
-            return false;
+            this.help();
+
+            return null;
         }
 
         const taskname = argv._.pop();
 
-        // TODO check task if exists
+        if (!(taskname in this.tasks)) {
+            this.help(taskname);
+
+            return null;
+        }
 
         return this.tasks[taskname].exec(argv);
     }
@@ -43,6 +57,14 @@ class JsMake {
                 }
             );
         }
+    }
+
+    help(taskname) {
+        if (taskname !== undefined) {
+            this.logger.error(`unknown task name - ${taskname}`);
+        }
+
+        this.logger.info('Usage: jsmake [command]');
     }
 }
 

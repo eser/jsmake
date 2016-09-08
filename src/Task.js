@@ -13,10 +13,17 @@ class Task {
         }
     }
 
-    exec(...args) {
+    exec(argv) {
         // TODO it's a very primitive implementation
         // TODO throw before and after events
-        return new Promise(this.callback);
+        return new Promise((resolve, reject) => {
+            try {
+                resolve(this.callback(argv));
+            }
+            catch (err) {
+                reject(err);
+            }
+        });
     }
 }
 

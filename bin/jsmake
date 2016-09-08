@@ -2,11 +2,16 @@
 
 'use strict';
 
-const updateNotifier = require('update-notifier'),
+const path = require('path'),
+    updateNotifier = require('update-notifier'),
+    maester = require('maester'),
+    maesterConsoleLogger = require('maester/lib/loggers/ConsoleLogger'),
     pkg = require('../package.json'),
     jsmake = require('../lib/');
 
 let exitCode = 0;
+
+maester.registerLogger(new maesterConsoleLogger());
 
 process.on('uncaughtException', function (err) {
     console.error(err.stack);
@@ -22,4 +27,5 @@ updateNotifier({ pkg: pkg })
 
 const args = process.argv.slice(2);
 
+jsmake.loadFile(path.join(__dirname, '../makefile.js'));
 jsmake.exec(args);
