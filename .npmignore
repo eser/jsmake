@@ -1,0 +1,33 @@
+# Terraform
+.deploy/
+
+# Visual Studio Code
+.vscode/
+
+# npm
+node_modules/
+
+# sey
+.sey/
+seyfile.js
+
+# OS X
+.DS_Store
+
+# Git
+.git*
+
+# Travis CI
+.travis.yml
+
+# Istanbul
+.istanbul.yml
+
+# apidoc
+apidoc.json
+
+# PM2
+processes.json
+
+# JSConfig
+jsconfig.json
