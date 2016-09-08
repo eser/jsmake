@@ -9,7 +9,7 @@ This project is designed to function as a build tool especially for node.js appl
 
 ## Quick start
 
-Execute `npm install jsmake --save-dev` to install jsmake and its dependencies into your project directory.
+Execute `npm install jsmake -g` to install jsmake on your system.
 
 
 ## Todo List
@@ -21,6 +21,7 @@ See [GitHub Issues](https://github.com/eserozvataf/jsmake/issues).
 
 * [maester](https://github.com/eserozvataf/maester)
 * yargs-parser
+* update-notifier
 
 
 ## Requirements
