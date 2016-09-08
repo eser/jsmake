@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const updateNotifier = require('update-notifier'),
+    pkg = require('../package.json'),
+    jsmake = require('../lib/');
+
+let exitCode = 0;
+
+process.on('uncaughtException', function (err) {
+    console.error(err.stack);
+    exitCode = 1;
+});
+
+process.on('exit', function () {
+    process.exit(exitCode);
+});
+
+updateNotifier({ pkg: pkg })
+    .notify({ defer: false });
+
+const args = process.argv.slice(2);
+
+jsmake.exec(args);

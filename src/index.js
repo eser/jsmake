@@ -16,9 +16,18 @@ class JsMake {
         this.tasks[name] = new Task(this, name, prerequisites, promise);
     }
 
-    exec(command) {
-        // TODO not implemented yet
-        // this.tasks[taskname].exec(yargsParsedArgs);
+    exec(args) {
+        const argv = yargsParser(args); // .replace('  ', ' ')
+
+        if (argv._.length === 0) {
+            return false;
+        }
+
+        const taskname = argv._.pop();
+
+        // TODO check task if exists
+
+        return this.tasks[taskname].exec(argv);
     }
 
     shell(commands) {

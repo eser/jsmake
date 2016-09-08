@@ -7,7 +7,7 @@
     "rake",
     "jake"
   ],
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "",
   "author": "Eser Ozvataf <eser@ozvataf.com>",
   "contributors": [
@@ -26,6 +26,7 @@
     "email": "eser@ozvataf.com"
   },
   "license": "Apache-2.0",
+  "preferGlobal": true,
   "main": "./lib/index.js",
   "engines": {
     "node": ">=4.2.0"
@@ -38,11 +39,14 @@
     "lib",
     "bin"
   ],
-  "bin": {},
+  "bin": {
+    "jsmake": "./bin/jsmake"
+  },
   "dependencies": {
     "colors": "^1.1.2",
     "debug": "^2.2.0",
     "maester": "^0.0.2",
+    "update-notifier": "^1.0.2",
     "yargs-parser": "^3.2.0"
   },
   "devDependencies": {}
