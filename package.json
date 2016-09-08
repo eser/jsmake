@@ -7,7 +7,7 @@
     "rake",
     "jake"
   ],
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "",
   "author": "Eser Ozvataf <eser@ozvataf.com>",
   "contributors": [
@@ -42,7 +42,8 @@
   "dependencies": {
     "colors": "^1.1.2",
     "debug": "^2.2.0",
-    "maester": "^0.0.2"
+    "maester": "^0.0.2",
+    "yargs-parser": "^3.2.0"
   },
   "devDependencies": {}
 }
