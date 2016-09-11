@@ -65,7 +65,8 @@ class RunContext {
         while (this.executionQueue.length > 0) {
             const taskname = this.executionQueue.shift();
 
-            const ret = this.owner.tasks[taskname].callback(this);
+            const callback = this.owner.tasks[taskname].callback.bind(this),
+                ret = callback(this.argv);
 
             if (ret instanceof Promise) {
                 await ret;

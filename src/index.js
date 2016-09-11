@@ -18,12 +18,7 @@ class JsMake {
     }
 
     loadFile(filepath) {
-        const _jsmake = global.jsmake;
-
-        global.jsmake = this;
         require(filepath);
-
-        global.jsmake = _jsmake;
     }
 
     task(name, p1, p2) {
@@ -58,4 +53,10 @@ class JsMake {
     }
 }
 
-module.exports = new JsMake();
+const instance = new JsMake();
+
+if (global.jsmake === undefined) {
+    global.jsmake = instance;
+}
+
+module.exports = instance;
