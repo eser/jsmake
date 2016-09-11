@@ -20,7 +20,13 @@ process.on('exit', () => {
 updateNotifier({ pkg: pkg })
     .notify({ defer: false });
 
-const args = process.argv.slice(2);
+const runContext = jsmake.createRunContext();
 
-jsmake.loadFile(path.join(process.cwd(), 'makefile.js'));
-jsmake.exec(args);
+runContext.setArgs(process.argv.slice(2));
+
+const makefilePath = runContext.argv.makefile || 'makefile.js'; 
+
+jsmake.loadFile(path.join(process.cwd(), makefilePath));
+
+runContext.execute();
+

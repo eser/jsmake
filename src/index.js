@@ -4,18 +4,18 @@ import Task from './Task.js';
 import RunContext from './RunContext.js';
 import Utils from './Utils.js';
 
-const errors = {
-    no_arguments: Symbol('no arguments'),
-    unknown_task: Symbol('unknown task'),
-    task_validation_failed: Symbol('task validation failed')
-};
-
 class JsMake {
     constructor() {
         this.events = new events.EventEmitter();
         this.tasks = {};
         this.logger = maester;
         this.utils = new Utils();
+
+        this.errors = {
+            no_arguments: Symbol('no arguments'),
+            unknown_task: Symbol('unknown task'),
+            task_validation_failed: Symbol('task validation failed')
+        };
     }
 
     loadFile(filepath) {
@@ -42,64 +42,16 @@ class JsMake {
         }
     }
 
-    validateArgvAndGetTask(argv) {
-        let taskname;
-
-        if (argv._.length === 0) {
-            taskname = 'default';
-        }
-        else {
-            taskname = argv._.shift();
-        }
-
-        if (!(taskname in this.tasks)) {
-            return { error: errors.unknown_task, taskname: taskname };
-        }
-
-        return { error: null, task: this.tasks[taskname] };
-    }
-
-    async execRunContext(runContext) {
-        try {
-            const validateResult = this.validateArgvAndGetTask(runContext.argv);
-
-            if (validateResult.error === errors.no_arguments) {
-                this.help();
-
-                return null;
-            }
-
-            if (validateResult.error === errors.unknown_task) {
-                this.logger.error(`unknown task name - ${validateResult.taskname}`);
-
-                return null;
-            }
-
-            const task = validateResult.task;
-
-            if (task.validate !== undefined && !task.validate(runContext.argv)) {
-                if (task.help !== undefined) {
-                    task.help();
-                }
-
-                return null;
-            }
-
-            runContext.addTask(task);
-
-            return await runContext.execute();
-        }
-        catch (ex) {
-            this.logger.error(ex);
-        }
+    createRunContext() {
+        return new RunContext(this);
     }
 
     async exec(args) {
-        const runContext = new RunContext(this);
+        const runContext = this.createRunContext();
 
         runContext.setArgs(args);
 
-        this.execRunContext(runContext);
+        return await runContext.execute();
     }
 
     help() {
