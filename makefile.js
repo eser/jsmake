@@ -1,5 +1,5 @@
 jsmake.task('pre-test', function (argv) {
-    console.log('loading...');
+    this.logger.info('loading...');
 });
 
 jsmake.task('test', function (argv) {
@@ -9,7 +9,7 @@ jsmake.task('test', function (argv) {
 });
 
 jsmake.task('post-test', function (argv) {
-    console.log('done.');
+    this.logger.info('done.');
 });
 
 jsmake.task('error', [], function (argv) {
@@ -21,5 +21,5 @@ jsmake.task('shell', [], function (argv) {
 });
 
 jsmake.task('default', [ 'test' ], function (argv) {
-    console.log(argv);
+    this.logger.info(argv);
 });

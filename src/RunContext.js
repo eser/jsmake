@@ -1,8 +1,10 @@
 import yargsParser from 'yargs-parser';
+import maester from 'maester';
 
 class RunContext {
     constructor(owner) {
         this.owner = owner;
+        this.logger = maester;
 
         this.executionQueue = [];
     }
@@ -53,7 +55,7 @@ class RunContext {
         }
 
         if (!(taskname in this.owner.tasks)) {
-            this.owner.logger.error(`unknown task name - ${taskname}`);
+            this.logger.error(`unknown task name - ${taskname}`);
 
             return { error: this.owner.errors.unknown_task, taskname: taskname };
         }
@@ -85,7 +87,7 @@ class RunContext {
             const task = validateResult.task;
 
             if (task.validate !== undefined && !task.validate(this.argv)) {
-                this.owner.logger.error(`task validation failed - ${task.name}`);
+                this.logger.error(`task validation failed - ${task.name}`);
 
                 if (task.help !== undefined) {
                     task.help();
@@ -101,7 +103,7 @@ class RunContext {
             return { error: null };
         }
         catch (ex) {
-            this.owner.logger.error(ex);
+            this.logger.error(ex);
         }
     }
 }
