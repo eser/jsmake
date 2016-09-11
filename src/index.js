@@ -44,11 +44,14 @@ class JsMake {
     }
 
     validateArgvAndGetTask(argv) {
-        if (argv._.length === 0) {
-            return { error: errors.no_arguments };
-        }
+        let taskname;
 
-        const taskname = argv._.shift();
+        if (argv._.length === 0) {
+            taskname = 'default';
+        }
+        else {
+            taskname = argv._.shift();
+        }
 
         if (!(taskname in this.tasks)) {
             return { error: errors.unknown_task, taskname: taskname };

@@ -1,4 +1,4 @@
-jsmake.task('pre-eser', function (context) {
+jsmake.task('pre-default', function (context) {
     return new Promise(function (resolve, reject) {
         console.log('loading...');
 
@@ -6,6 +6,6 @@ jsmake.task('pre-eser', function (context) {
     });
 });
 
-jsmake.task('eser', [ 'pre-eser' ], function (context) {
+jsmake.task('default', [ 'pre-default' ], function (context) {
     console.log(context.argv);
 });
