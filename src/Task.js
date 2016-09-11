@@ -13,6 +13,13 @@ class Task {
         }
     }
 
+    validate(argv) {
+        return true;
+    }
+
+    help() {
+    }
+
     exec(argv) {
         // TODO it's a very primitive implementation
         // TODO throw before and after events
