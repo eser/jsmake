@@ -12,7 +12,6 @@ class JsMake {
         this.utils = new Utils();
 
         this.errors = {
-            no_arguments: Symbol('no arguments'),
             unknown_task: Symbol('unknown task'),
             task_validation_failed: Symbol('task validation failed')
         };

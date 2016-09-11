@@ -28,7 +28,18 @@ class RunContext {
             return;
         }
 
+        const preTaskName = `pre-${task.name}`,
+            postTaskName = `post-${task.name}`;
+
+        if (preTaskName in this.owner.tasks) {
+            this.addTask(this.owner.tasks[preTaskName]);
+        }
+
         this.executionQueue.push(task.name);
+
+        if (postTaskName in this.owner.tasks) {
+            this.addTask(this.owner.tasks[postTaskName]);
+        }
     }
 
     validateArgvAndGetTask() {
