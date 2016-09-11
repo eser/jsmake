@@ -7,7 +7,7 @@ import pkg from '../package.json';
 
 let exitCode = 0;
 
-maester.registerLogger(new maesterConsoleLogger());
+// maester.registerLogger(new maesterConsoleLogger());
 
 process.on('uncaughtException', (err) => {
     console.error(err.stack);

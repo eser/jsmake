@@ -43,9 +43,10 @@
     "jsmake": "./bin/jsmake"
   },
   "dependencies": {
+    "cofounder": "^0.0.3",
     "colors": "^1.1.2",
     "debug": "^2.2.0",
-    "maester": "^0.0.3",
+    "maester": "^0.0.6",
     "update-notifier": "^1.0.2",
     "yargs-parser": "^3.2.0"
   },
