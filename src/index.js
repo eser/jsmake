@@ -1,5 +1,4 @@
 import events from 'events';
-import yargsParser from 'yargs-parser';
 import maester from 'maester';
 import Task from './Task.js';
 import RunContext from './RunContext.js';
@@ -60,11 +59,9 @@ class JsMake {
         return { error: null, task: this.tasks[taskname] };
     }
 
-    async exec(args) {
+    async execRunContext(runContext) {
         try {
-            const argv = yargsParser(args); // .replace('  ', ' ')
-
-            const validateResult = this.validateArgvAndGetTask(argv);
+            const validateResult = this.validateArgvAndGetTask(runContext.argv);
 
             if (validateResult.error === errors.no_arguments) {
                 this.help();
@@ -80,15 +77,13 @@ class JsMake {
 
             const task = validateResult.task;
 
-            if (task.validate !== undefined && !task.validate(argv)) {
+            if (task.validate !== undefined && !task.validate(runContext.argv)) {
                 if (task.help !== undefined) {
                     task.help();
                 }
 
                 return null;
             }
-
-            const runContext = new RunContext(this, argv);
 
             runContext.addTask(task);
 
@@ -97,6 +92,14 @@ class JsMake {
         catch (ex) {
             this.logger.error(ex);
         }
+    }
+
+    async exec(args) {
+        const runContext = new RunContext(this);
+
+        runContext.setArgs(args);
+
+        this.execRunContext(runContext);
     }
 
     help() {

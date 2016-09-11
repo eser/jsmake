@@ -1,13 +1,12 @@
 import path from 'path';
 import updateNotifier from 'update-notifier';
 import maester from 'maester';
-import maesterConsoleLogger from 'maester/lib/loggers/ConsoleLogger';
 import jsmake from './';
 import pkg from '../package.json';
 
 let exitCode = 0;
 
-// maester.registerLogger(new maesterConsoleLogger());
+maester.addLogger('ConsoleLogger');
 
 process.on('uncaughtException', (err) => {
     console.error(err.stack);

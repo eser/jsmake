@@ -1,9 +1,20 @@
+import yargsParser from 'yargs-parser';
+
 class RunContext {
-    constructor(owner, argv) {
+    constructor(owner) {
         this.owner = owner;
-        this.argv = argv;
 
         this.executionQueue = [];
+    }
+
+    setArgv(argv) {
+        this.argv = argv;
+    }
+
+    setArgs(args) {
+        const argv = yargsParser(args); // .replace('  ', ' ')
+
+        this.setArgv(argv);
     }
 
     addTask(task) {
