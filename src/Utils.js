@@ -1,4 +1,4 @@
-const childProcess = require('child_process');
+import childProcess from 'child_process';
 
 class Utils {
     shell(commands) {
@@ -22,4 +22,4 @@ class Utils {
     // TODO mv
 }
 
-module.exports = Utils;
+export default Utils;

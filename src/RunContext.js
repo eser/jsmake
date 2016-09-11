@@ -33,4 +33,4 @@ class RunContext {
     }
 }
 
-module.exports = RunContext;
+export default RunContext;

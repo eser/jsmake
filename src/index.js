@@ -1,9 +1,9 @@
-const events = require('events'),
-    yargsParser = require('yargs-parser'),
-    maester = require('maester'),
-    Task = require('./Task.js'),
-    RunContext = require('./RunContext.js'),
-    Utils = require('./Utils.js');
+import events from 'events';
+import yargsParser from 'yargs-parser';
+import maester from 'maester';
+import Task from './Task.js';
+import RunContext from './RunContext.js';
+import Utils from './Utils.js';
 
 const errors = {
     no_arguments: Symbol('no arguments'),
@@ -104,6 +104,4 @@ class JsMake {
     }
 }
 
-const instance = new JsMake();
-
-module.exports = instance;
+module.exports = new JsMake();
