@@ -1,7 +1,7 @@
-jsmake.task('pre-eser', function (argv) {
+jsmake.task('pre-eser', function (context) {
     console.log('pre-eser');
 });
 
-jsmake.task('eser', [ 'pre-eser' ], function (argv) {
-    console.log(argv);
+jsmake.task('eser', [ 'pre-eser' ], function (context) {
+    console.log(context.argv);
 });
