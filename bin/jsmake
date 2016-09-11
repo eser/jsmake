@@ -2,30 +2,4 @@
 
 'use strict';
 
-const path = require('path'),
-    updateNotifier = require('update-notifier'),
-    maester = require('maester'),
-    maesterConsoleLogger = require('maester/lib/loggers/ConsoleLogger'),
-    pkg = require('../package.json'),
-    jsmake = require('../lib/');
-
-let exitCode = 0;
-
-maester.registerLogger(new maesterConsoleLogger());
-
-process.on('uncaughtException', function (err) {
-    console.error(err.stack);
-    exitCode = 1;
-});
-
-process.on('exit', function () {
-    process.exit(exitCode);
-});
-
-updateNotifier({ pkg: pkg })
-    .notify({ defer: false });
-
-const args = process.argv.slice(2);
-
-jsmake.loadFile(path.join(__dirname, '../makefile.js'));
-jsmake.exec(args);
+require('../lib/cli.js');
