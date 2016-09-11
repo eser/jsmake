@@ -12,6 +12,15 @@ This project is designed to function as a build tool especially for node.js appl
 Execute `npm install jsmake -g` to install jsmake on your system.
 
 
+## Planned Feature Highlights
+
+- Tasks with prerequisites
+- Async task execution with Promises
+- Can be used as a library
+- Powerful command line argument parsing
+- Environment variables handling (even in Windows)
+
+
 ## Todo List
 
 See [GitHub Issues](https://github.com/eserozvataf/jsmake/issues).
