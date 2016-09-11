@@ -20,11 +20,15 @@ class RunContext {
         this.executionQueue.push(task.name);
     }
 
-    execute() {
+    async execute() {
         while (this.executionQueue.length > 0) {
             const taskname = this.executionQueue.shift();
 
-            this.owner.tasks[taskname].callback(this);
+            const ret = this.owner.tasks[taskname].callback(this);
+
+            if (ret instanceof Promise) {
+                await ret;
+            }
         }
     }
 }

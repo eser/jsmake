@@ -57,7 +57,7 @@ class JsMake {
         return { error: null, task: this.tasks[taskname] };
     }
 
-    exec(args) {
+    async exec(args) {
         try {
             const argv = yargsParser(args); // .replace('  ', ' ')
 
@@ -89,7 +89,7 @@ class JsMake {
 
             runContext.addTask(task);
 
-            return runContext.execute();
+            return await runContext.execute();
         }
         catch (ex) {
             this.logger.error(ex);
