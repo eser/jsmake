@@ -4,13 +4,13 @@ import cofounder from 'cofounder';
 class Utils {
     constructor() {
         this.scanDir = cofounder.scanDir;
+        this.glob = cofounder.glob;
+        this.rm = cofounder.rm;
+        this.rmdir = cofounder.rmdir;
         // TODO
-        // this.glob = cofounder.glob;
         // this.mkdir = cofounder.mkdir;
-        // this.rmdir = cofounder.rmdir;
         // this.cp = cofounder.cp;
         // this.mv = cofounder.mv;
-        // this.rm = cofounder.rm;
     }
 
     shell(commands) {
