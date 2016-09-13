@@ -21,19 +21,37 @@ class JsMake {
         require(filepath);
     }
 
-    task(name, p1, p2) {
+    task(p1, p2, p3) {
         // p1 as task instance
+        if (p1 instanceof Task) {
+            this.tasks[p1.name] = p1;
+
+            return this.tasks[p1.name];
+        }
+
+        // p1 as object instance
         if (p1.constructor !== Array && p1.constructor !== Function && p1 instanceof Object) {
-            this.tasks[name] = p1;
+            this.tasks[p1.name] = Object.assign(new Task(this), p1);
+
+            return this.tasks[p1.name];
         }
-        // p1 as method
-        else if (p2 === undefined) {
-            this.tasks[name] = new Task(this, name, [], p1);
+
+        // p1 as taskname string
+        if (p2 === undefined) {
+            return this.tasks[p1];
         }
-        // p1 as prerequisites, p2 as method
-        else {
-            this.tasks[name] = new Task(this, name, p1, p2);
+
+        // p1 as taskname string, p2 as method
+        if (p3 === undefined) {
+            this.tasks[p1] = new Task(this, p1, [], p2);
+
+            return this.tasks[p1];
         }
+
+        // p1 as taskname string, p2 as prerequisites, p3 as method
+        this.tasks[p1] = new Task(this, p1, p2, p3);
+        
+        return this.tasks[p1];
     }
 
     createRunContext() {

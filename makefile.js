@@ -12,14 +12,25 @@ jsmake.task('post-test', function (argv) {
     this.logger.info('done.');
 });
 
-jsmake.task('error', [], function (argv) {
+jsmake.task('error', function (argv) {
     throw new Error('an error');
 });
 
-jsmake.task('shell', [], function (argv) {
+jsmake.task('shell', function (argv) {
     jsmake.utils.shell('npm ls');
 });
 
 jsmake.task('default', [ 'test' ], function (argv) {
     this.logger.info(argv);
 });
+
+jsmake.task({
+    name: 'obj',
+    callback: function (argv) {
+        this.logger.info(argv);
+    }
+});
+
+const Task = require('./lib/Task.js').default;
+const taskInstance = new Task(jsmake, 'obj2', [], function (argv) { this.logger.info(argv); });
+jsmake.task(taskInstance);
