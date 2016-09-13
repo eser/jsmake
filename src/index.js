@@ -12,13 +12,18 @@ class JsMake {
         this.utils = new Utils();
 
         this.errors = {
-            unknown_task: Symbol('unknown task'),
-            task_validation_failed: Symbol('task validation failed')
+            unknownTask: Symbol('unknown task'),
+            taskValidationFailed: Symbol('task validation failed'),
+            exception: Symbol('exception thrown')
         };
     }
 
     loadFile(filepath) {
         require(filepath);
+    }
+
+    newTask(...args) {
+        return new Task(this, ...args);
     }
 
     task(p1, p2, p3) {
@@ -50,7 +55,7 @@ class JsMake {
 
         // p1 as taskname string, p2 as prerequisites, p3 as method
         this.tasks[p1] = new Task(this, p1, p2, p3);
-        
+
         return this.tasks[p1];
     }
 

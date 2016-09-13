@@ -31,6 +31,6 @@ jsmake.task({
     }
 });
 
-const Task = require('./lib/Task.js').default;
-const taskInstance = new Task(jsmake, 'obj2', [], function (argv) { this.logger.info(argv); });
+const taskInstance = jsmake.newTask('obj2');
+taskInstance.setCallback(function (argv) { this.logger.info(argv); });
 jsmake.task(taskInstance);

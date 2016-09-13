@@ -20,7 +20,7 @@ class RunContext {
     }
 
     addTask(task) {
-        for (let prerequisite of task.prerequisites) {
+        for (const prerequisite of task.prerequisites) {
             const prerequisiteTask = this.owner.tasks[prerequisite];
 
             this.addTask(prerequisiteTask);
@@ -57,7 +57,7 @@ class RunContext {
         if (!(taskname in this.owner.tasks)) {
             this.logger.error(`unknown task name - ${taskname}`);
 
-            return { error: this.owner.errors.unknown_task, taskname: taskname };
+            return { error: this.owner.errors.unknownTask, taskname: taskname };
         }
 
         return { error: null, task: this.owner.tasks[taskname] };
@@ -93,7 +93,7 @@ class RunContext {
                     task.help();
                 }
 
-                return { error: this.owner.errors.task_validation_failed, task: task };
+                return { error: this.owner.errors.taskValidationFailed, task: task };
             }
 
             this.addTask(task);
@@ -104,6 +104,8 @@ class RunContext {
         }
         catch (ex) {
             this.logger.error(ex);
+
+            return { error: this.owner.errors.exception, exception: ex };
         }
     }
 }
