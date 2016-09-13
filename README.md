@@ -12,13 +12,24 @@ This project is designed to function as a build tool especially for node.js appl
 Execute `npm install jsmake -g` to install jsmake on your system.
 
 
+## Why?
+
+jsmake is a tool to simplify building or deploying your software components from its sources by executing user created directives listed in `makefile.js`.
+
+Apart from other tools like gulp, jsmake only concentrates on executing tasks. But it can *also* [interoperate with tools like gulp](samples/using-with-gulp-makefile.js). So it's the right tool if you have set of duties needs to be executed on your codebase.
+
+
 ## Planned Feature Highlights
 
-- Tasks with prerequisites
-- Async task execution with Promises
-- Can be used as a library
-- Powerful command line argument parsing
+- ~~Tasks with prerequisites~~ *done!*
+- ~~Async task execution with Promises~~ *done!*
+- ~~Can be used as a library~~ *done!*
+- ~~Powerful command line argument parsing~~ *done!*
 - Environment variables handling (even in Windows)
+- Event subscription for tasks and execution queues
+- ~~NPM bump version~~ *done!*
+- Watch task
+- Publish tasks
 
 
 ## Todo List

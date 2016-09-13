@@ -20,6 +20,10 @@ jsmake.task('shell', function (argv) {
     jsmake.utils.shell('npm ls');
 });
 
+jsmake.task('bump', function (argv) {
+    jsmake.utils.packageJsonVersionBump('./package.json', 'patch');
+});
+
 jsmake.task('default', [ 'test' ], function (argv) {
     this.logger.info(argv);
 });
