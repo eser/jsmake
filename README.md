@@ -29,6 +29,7 @@ See [GitHub Issues](https://github.com/eserozvataf/jsmake/issues).
 ## Dependencies
 
 * [maester](https://github.com/eserozvataf/maester)
+* [cofounder](https://github.com/eserozvataf/cofounder)
 * yargs-parser
 * update-notifier
 

@@ -65,14 +65,16 @@ class RunContext {
 
     async runExecutionQueue() {
         while (this.executionQueue.length > 0) {
-            const taskname = this.executionQueue.shift();
-
-            const callback = this.owner.tasks[taskname].callback.bind(this),
+            const taskname = this.executionQueue.shift(),
+                task = this.owner.tasks[taskname],
+                callback = this.owner.tasks[taskname].callback.bind(this),
                 ret = callback(this.argv);
 
             if (ret instanceof Promise) {
                 await ret;
             }
+
+            task.events.emit('complete');
         }
     }
 

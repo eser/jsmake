@@ -22,8 +22,12 @@ class JsMake {
         require(filepath);
     }
 
-    newTask(...args) {
+    createTask(...args) {
         return new Task(this, ...args);
+    }
+
+    createRunContext(...args) {
+        return new RunContext(this, ...args);
     }
 
     task(p1, p2, p3) {
@@ -57,10 +61,6 @@ class JsMake {
         this.tasks[p1] = new Task(this, p1, p2, p3);
 
         return this.tasks[p1];
-    }
-
-    createRunContext() {
-        return new RunContext(this);
     }
 
     async exec(args) {

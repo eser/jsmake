@@ -1,7 +1,11 @@
-jsmake.task('test', function (argv) {
-    this.logger.info('test');
+jsmake.task('task1', function (argv) {
+    this.logger.info('task1');
 });
 
-jsmake.task('default', [ 'test' ], function (argv) {
-    this.logger.info(argv);
+jsmake.task('task2', function (argv) {
+    this.logger.info('task2');
+});
+
+jsmake.task('default', [ 'task1', 'task2' ], function (argv) {
+    this.logger.info('done.');
 });
