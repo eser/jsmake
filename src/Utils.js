@@ -1,7 +1,8 @@
+import fs from 'fs';
 import childProcess from 'child_process';
 import cofounder from 'cofounder';
 import semver from 'semver';
-import fs from 'fs';
+import npm from 'npm';
 
 class Utils {
     constructor() {
@@ -52,6 +53,19 @@ class Utils {
         packageContent.version = semver.inc(packageContent.version, type);
 
         this.packageJsonSave(filepath, packageContent);
+    }
+
+    npmPublish() {
+        npm.load(
+            { loaded: false },
+            function (err) {
+                if (err) {
+                    throw err;
+                }
+
+                npm.commands.publish();
+            }
+        );
     }
 }
 

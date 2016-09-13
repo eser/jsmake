@@ -24,6 +24,10 @@ jsmake.task('bump', function (argv) {
     jsmake.utils.packageJsonVersionBump('./package.json', 'patch');
 });
 
+jsmake.task('publish', function (argv) {
+    jsmake.utils.npmPublish();
+});
+
 jsmake.task('default', [ 'test' ], function (argv) {
     this.logger.info(argv);
 });
