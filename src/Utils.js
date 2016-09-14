@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 import childProcess from 'child_process';
 import cofounder from 'cofounder';
 import semver from 'semver';
@@ -16,19 +17,23 @@ class Utils {
         // this.mv = cofounder.mv;
     }
 
-    shell(commands) {
-        const commands_ = (commands.constructor === Array) ? commands : [ commands ];
+    shell(command, args = [], env = {}) {
+        const env_ = Object.assign({}, process.env, env);
 
-        for (const command of commands_) {
-            childProcess.spawnSync(
-                command,
-                [],
-                {
-                    stdio: 'inherit',
-                    shell: true
-                }
-            );
-        }
+        const proc = childProcess.spawnSync(
+            command,
+            args,
+            {
+                stdio: 'inherit',
+                shell: true,
+                env: env_,
+                encoding: 'utf8'
+            }
+        );
+
+        process.on('SIGTERM', () => proc.kill('SIGTERM'));
+
+        return proc;
     }
 
     packageJsonLoad(filepath) {

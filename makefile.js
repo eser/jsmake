@@ -17,7 +17,11 @@ jsmake.task('error', function (argv) {
 });
 
 jsmake.task('shell', function (argv) {
-    jsmake.utils.shell('npm ls');
+    jsmake.utils.shell('npm', [ 'ls' ]);
+});
+
+jsmake.task('setenv', function (argv) {
+    jsmake.utils.shell('echo %TEST%', [], { 'TEST': 1 });
 });
 
 jsmake.task('bump', function (argv) {
