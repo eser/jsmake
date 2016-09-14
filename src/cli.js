@@ -24,9 +24,18 @@ const runContext = jsmake.createRunContext();
 
 runContext.setArgs(process.argv.slice(2));
 
-const makefilePath = runContext.argv.makefile || 'makefile.js';
+if (runContext.argv.help) {
+    jsmake.help();
+}
+else {
+    const makefilePath = runContext.argv.makefile || 'makefile.js';
 
-jsmake.loadFile(path.join(process.cwd(), makefilePath));
+    jsmake.loadFile(path.join(process.cwd(), makefilePath));
 
-runContext.execute();
-
+    if (runContext.argv.tasks) {
+        jsmake.listTasks();
+    }
+    else {
+        runContext.execute();
+    }
+}

@@ -71,6 +71,12 @@ class JsMake {
         return await runContext.execute();
     }
 
+    listTasks() {
+        for (const item in this.tasks) {
+            this.logger.info(this.tasks[item].name);
+        }
+    }
+
     help() {
         this.logger.info('Usage: jsmake [command]');
     }
