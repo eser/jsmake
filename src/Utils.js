@@ -53,6 +53,8 @@ class Utils {
         packageContent.version = semver.inc(packageContent.version, type);
 
         this.packageJsonSave(filepath, packageContent);
+
+        return packageContent.version;
     }
 
     npmPublish() {
