@@ -21,7 +21,9 @@ jsmake.task('shell', function (argv) {
 });
 
 jsmake.task('bump', function (argv) {
-    jsmake.utils.packageJsonVersionBump('./package.json', 'patch');
+    var version = jsmake.utils.packageJsonVersionBump('./package.json', 'patch');
+
+    this.logger.info('Bumped to version ' + version + '.');
 });
 
 jsmake.task('publish', function (argv) {
