@@ -3,6 +3,7 @@ import maester from 'maester';
 import Task from './Task.js';
 import RunContext from './RunContext.js';
 import Utils from './Utils.js';
+import pkg from '../package.json';
 
 class JsMake {
     constructor() {
@@ -77,8 +78,17 @@ class JsMake {
         }
     }
 
+    version() {
+        this.logger.info(`Version ${pkg.version}`);
+    }
+
     help() {
         this.logger.info('Usage: jsmake [command]');
+        this.logger.info('-f, --makefile FILE: Load tasks from FILE.');
+        this.logger.info('-t, --tasks:         Lists defined tasks.');
+        this.logger.info('-h, --help:          Displays this help message.');
+        this.logger.info('-v, --version:       Displays the jsmake version.');
+        this.logger.info('-q, --quiet:         Turns off output of non-critical log messages.');
     }
 }
 

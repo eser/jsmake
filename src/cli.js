@@ -6,7 +6,7 @@ import pkg from '../package.json';
 
 let exitCode = 0;
 
-maester.addLogger('ConsoleLogger');
+const logger = maester.addLogger('ConsoleLogger', 'info');
 
 process.on('uncaughtException', (err) => {
     console.error(err.stack);
@@ -24,15 +24,22 @@ const runContext = jsmake.createRunContext();
 
 runContext.setArgs(process.argv.slice(2));
 
-if (runContext.argv.help) {
+if (runContext.argv.quiet || runContext.argv.q) {
+    logger.minimumSeverity = 'warn';
+}
+
+if (runContext.argv.version || runContext.argv.v) {
+    jsmake.version();
+}
+else if (runContext.argv.help || runContext.argv.h) {
     jsmake.help();
 }
 else {
-    const makefilePath = runContext.argv.makefile || 'makefile.js';
+    const makefilePath = runContext.argv.makefile || runContext.argv.f || 'makefile.js';
 
     jsmake.loadFile(path.join(process.cwd(), makefilePath));
 
-    if (runContext.argv.tasks) {
+    if (runContext.argv.tasks || runContext.argv.t) {
         jsmake.listTasks();
     }
     else {
