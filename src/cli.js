@@ -6,10 +6,21 @@ import pkg from '../package.json';
 
 let exitCode = 0;
 
-const logger = maester.addLogger('ConsoleLogger', 'info');
+const argv = jsmake.utils.parseArgv(process.argv.slice(2));
+
+let minimumSeverity;
+
+if (argv.quiet || argv.q) {
+    minimumSeverity = 'warn';
+}
+else {
+    minimumSeverity = 'info';
+}
+
+const logger = maester.addLogger('ConsoleLogger', minimumSeverity);
 
 process.on('uncaughtException', (err) => {
-    console.error(err.stack);
+    maester.error(err.stack);
     exitCode = 1;
 });
 
@@ -20,29 +31,24 @@ process.on('exit', () => {
 updateNotifier({ pkg: pkg })
     .notify({ defer: false });
 
-const runContext = jsmake.createRunContext();
-
-runContext.setArgs(process.argv.slice(2));
-
-if (runContext.argv.quiet || runContext.argv.q) {
-    logger.minimumSeverity = 'warn';
-}
-
-if (runContext.argv.version || runContext.argv.v) {
+if (argv.version || argv.v) {
     jsmake.version();
 }
-else if (runContext.argv.help || runContext.argv.h) {
+else if (argv.help || argv.h) {
     jsmake.help();
 }
 else {
-    const makefilePath = runContext.argv.makefile || runContext.argv.f || 'makefile.js';
+    const makefilePath = argv.makefile || argv.f || 'makefile.js';
 
     jsmake.loadFile(path.join(process.cwd(), makefilePath));
 
-    if (runContext.argv.tasks || runContext.argv.t) {
+    if (argv.tasks || argv.t) {
         jsmake.listTasks();
     }
     else {
+        const runContext = jsmake.createRunContext();
+
+        runContext.setArgv(argv);
         runContext.execute();
     }
 }

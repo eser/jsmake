@@ -43,6 +43,25 @@ class Task {
 
     help() {
     }
+
+    async execute(argv) {
+        const action = this.action.bind(this);
+
+        try {
+            const ret = action(argv);
+
+            if (ret instanceof Promise) {
+                await ret;
+            }
+
+            this.events.emit('done');
+        }
+        catch (ex) {
+            this.events.emit('error', ex);
+        }
+
+        this.events.emit('complete');
+    }
 }
 
 export default Task;

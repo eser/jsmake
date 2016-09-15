@@ -5,3 +5,4 @@ jsmake.task('sayHello', function (argv) {
 });
 
 jsmake.exec('sayHello --name=eser');
+jsmake.tasks.sayHello.execute({ name: 'europe' });

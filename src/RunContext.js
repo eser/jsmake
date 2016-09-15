@@ -1,4 +1,3 @@
-import yargsParser from 'yargs-parser';
 import maester from 'maester';
 
 class RunContext {
@@ -14,9 +13,7 @@ class RunContext {
     }
 
     setArgs(args) {
-        const argv = yargsParser(args); // .replace('  ', ' ')
-
-        this.setArgv(argv);
+        this.argv = this.owner.utils.parseArgv(args);
     }
 
     addTask(task) {
@@ -66,15 +63,9 @@ class RunContext {
     async runExecutionQueue() {
         while (this.executionQueue.length > 0) {
             const taskname = this.executionQueue.shift(),
-                task = this.owner.tasks[taskname],
-                action = this.owner.tasks[taskname].action.bind(this),
-                ret = action(this.argv);
+                task = this.owner.tasks[taskname];
 
-            if (ret instanceof Promise) {
-                await ret;
-            }
-
-            task.events.emit('complete');
+            await task.execute(this.argv);
         }
     }
 

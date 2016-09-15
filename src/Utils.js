@@ -4,6 +4,7 @@ import childProcess from 'child_process';
 import cofounder from 'cofounder';
 import semver from 'semver';
 import npm from 'npm';
+import yargsParser from 'yargs-parser';
 
 class Utils {
     constructor() {
@@ -15,6 +16,10 @@ class Utils {
         // TODO
         // this.cp = cofounder.cp;
         // this.mv = cofounder.mv;
+    }
+
+    parseArgv(args) {
+        return yargsParser(args); // .replace('  ', ' ')
     }
 
     shell(command, args = [], env = {}) {
