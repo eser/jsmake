@@ -44,11 +44,11 @@ jsmake.task('default').events.on('complete', function () {
 
 jsmake.task({
     name: 'obj',
-    callback: function (argv) {
+    action: function (argv) {
         this.logger.info(argv);
     }
 });
 
 const taskInstance = jsmake.createTask('obj2');
-taskInstance.setCallback(function (argv) { this.logger.info(argv); });
+taskInstance.setAction(function (argv) { this.logger.info(argv); });
 jsmake.task(taskInstance);

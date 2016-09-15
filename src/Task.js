@@ -3,10 +3,10 @@ import maester from 'maester';
 
 class Task {
     static notAssigned() {
-        throw new Error('task\'s callback is not assigned');
+        throw new Error('task\'s action is not assigned');
     }
 
-    constructor(owner, name, prerequisites, callback) {
+    constructor(owner, name, prerequisites, action) {
         this.owner = owner;
         this.name = name;
 
@@ -15,16 +15,16 @@ class Task {
 
         if (prerequisites === undefined) {
             this.prerequisites = [];
-            this.callback = this.constructor.notAssigned;
+            this.action = this.constructor.notAssigned;
         }
         else {
-            if (callback === undefined) {
+            if (action === undefined) {
                 this.prerequisites = [];
-                this.callback = prerequisites;
+                this.action = prerequisites;
             }
             else {
                 this.prerequisites = prerequisites;
-                this.callback = callback;
+                this.action = action;
             }
         }
     }
@@ -33,8 +33,8 @@ class Task {
         this.prerequisites = prerequisites;
     }
 
-    setCallback(callback) {
-        this.callback = callback;
+    setAction(action) {
+        this.action = action;
     }
 
     validate(argv) {
