@@ -1,11 +1,11 @@
 jsmake.task('pre-default', function (argv) {
-    this.logger.info('pre-event');
+    console.log('pre-default task, runs before default task.');
 });
 
 jsmake.task('default', function (argv) {
-    this.logger.info('default event');
+    console.log('default task');
 });
 
 jsmake.task('post-default', function (argv) {
-    this.logger.info('post-event');
+    console.log('post-default task, runs after default task.');
 });

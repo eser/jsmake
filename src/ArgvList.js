@@ -119,7 +119,7 @@ class ArgvList {
     }
 
     help() {
-        let output = '';
+        const output = [];
 
         for (const key in this.rules) {
             const rule = this.rules[key];
@@ -130,11 +130,13 @@ class ArgvList {
                 lineOutput += ` ${rule.parameter}`;
             }
 
-            for (const alias of rule.aliases) {
-                lineOutput += `, ${(alias.length > 1) ? '--' : '-'}${alias}`;
+            if (rule.aliases !== undefined) {
+                for (const alias of rule.aliases) {
+                    lineOutput += `, ${(alias.length > 1) ? '--' : '-'}${alias}`;
+                }
             }
 
-            output += `${lineOutput}${' '.repeat(32 - lineOutput.length)} ${rule.description}\n`;
+            output.push(`${lineOutput}${' '.repeat(29 - lineOutput.length)} ${rule.description}`);
         }
 
         return output;

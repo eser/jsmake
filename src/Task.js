@@ -1,32 +1,51 @@
 import events from 'events';
-import maester from 'maester';
+import ArgvList from './ArgvList.js';
 
 class Task {
     static notAssigned() {
         throw new Error('task\'s action is not assigned');
     }
 
-    constructor(owner, name, prerequisites, action) {
-        this.owner = owner;
-        this.name = name;
+    static from(source) {
+        const task = new this(source.name, source.description, undefined, undefined, undefined);
 
+        return Object.assign(task, source);
+    }
+
+    constructor(name, description, parameters, prerequisites, action) {
         this.events = new events.EventEmitter();
-        this.logger = maester;
+
+        this.name = name;
+        this.description = description;
+
+        if (parameters === undefined) {
+            this.parameters = new ArgvList();
+        }
+        else {
+            this.parameters = parameters;
+        }
 
         if (prerequisites === undefined) {
             this.prerequisites = [];
+        }
+        else {
+            this.prerequisites = prerequisites;
+        }
+
+        if (action === undefined) {
             this.action = this.constructor.notAssigned;
         }
         else {
-            if (action === undefined) {
-                this.prerequisites = [];
-                this.action = prerequisites;
-            }
-            else {
-                this.prerequisites = prerequisites;
-                this.action = action;
-            }
+            this.action = action;
         }
+    }
+
+    setDescription(description) {
+        this.description = description;
+    }
+
+    setParameters(parameters) {
+        this.parameters = parameters;
     }
 
     setPrerequisites(prerequisites) {
@@ -37,27 +56,29 @@ class Task {
         this.action = action;
     }
 
-    validate(argv) {
-        return true;
-    }
+    async execute(argv, context) {
+        if (this.action !== this.constructor.notAssigned) {
+            let action;
 
-    help() {
-    }
-
-    async execute(argv) {
-        const action = this.action.bind(this);
-
-        try {
-            const ret = action(argv);
-
-            if (ret instanceof Promise) {
-                await ret;
+            if (context === undefined) {
+                action = this.action;
+            }
+            else {
+                action = this.action.bind(context);
             }
 
-            this.events.emit('done');
-        }
-        catch (ex) {
-            this.events.emit('error', ex);
+            try {
+                const ret = action(argv);
+
+                if (ret instanceof Promise) {
+                    await ret;
+                }
+
+                this.events.emit('done');
+            }
+            catch (ex) {
+                this.events.emit('error', ex);
+            }
         }
 
         this.events.emit('complete');

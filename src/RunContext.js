@@ -65,7 +65,7 @@ class RunContext {
             const taskname = this.executionQueue.shift(),
                 task = this.owner.tasks[taskname];
 
-            await task.execute(this.argv);
+            await task.execute(this.argv, this);
         }
     }
 

@@ -92,10 +92,6 @@ updateNotifier({ pkg: pkg })
 if (argValues.version.value) {
     console.log(`jsmake version ${jsmake.getVersion()}`);
 }
-else if (argValues.help.value) {
-    console.log('Usage: jsmake [command]\n');
-    console.log(argvList.help());
-}
 else {
     for (const makefile of argValues.makefile.value) {
         const makefilePath = path.join(process.cwd(), makefile);
@@ -107,6 +103,12 @@ else {
         for (const task of jsmake.getTaskNames()) {
             console.log(task);
         }
+    }
+    else if (
+            argValues.help.value ||
+            (argv._.length === 0 && jsmake.tasks.default === undefined)
+        ) {
+        console.log(jsmake.getHelp().join('\n'));
     }
     else {
         const runContext = jsmake.createRunContext();

@@ -1,57 +1,22 @@
-jsmake.task('pre-test', function (argv) {
-    this.logger.info('loading...');
-});
-
-jsmake.task('test', function (argv) {
-    return new Promise(function (resolve, reject) {
-        setTimeout(function () { console.log('loading completed.'); resolve(); }, 3000);
-    });
-});
-
-jsmake.task('post-test', function (argv) {
-    this.logger.info('done.');
-});
-
-jsmake.task('error', function (argv) {
-    throw new Error('an error');
-});
-
-jsmake.task('shell', function (argv) {
-    jsmake.utils.shell('npm', [ 'ls' ]);
-});
-
-jsmake.task('setenv', function (argv) {
-    jsmake.utils.shell('echo %TEST%', [], { 'TEST': 1 });
-});
-
+jsmake.desc('Bumps the package version for next release.');
 jsmake.task('bump', function (argv) {
     var version = jsmake.utils.packageJsonVersionBump('./package.json', 'patch');
 
-    this.logger.info('Bumped to version ' + version + '.');
+    console.log('Bumped to version ' + version + '.');
 });
 
+jsmake.desc('Publishes package to npm.');
 jsmake.task('publish', function (argv) {
     jsmake.utils.npmPublish();
 });
 
-jsmake.task('default', [ 'test' ], function (argv) {
-    this.logger.info(argv);
+jsmake.desc('Reinstalls dependencies from npm.');
+jsmake.task('deps', function (argv) {
+    jsmake.utils.rmdir('node_modules');
+    jsmake.utils.shell('npm install');
 });
 
-jsmake.tasks.default.events.on('complete', function () {
-    jsmake.logger.info('completed.');
+jsmake.desc('Builds the source code.');
+jsmake.task('build', function (argv) {
+    jsmake.utils.shell('sey rebuild');
 });
-
-jsmake.task({
-    name: 'obj',
-    action: function (argv) {
-        this.logger.info(argv.name);
-    },
-    help: function () {
-        
-    }
-});
-
-const taskInstance = jsmake.createTask('obj2');
-taskInstance.setAction(function (argv) { this.logger.info(argv); });
-jsmake.task(taskInstance);
