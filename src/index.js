@@ -1,11 +1,177 @@
-const EventEmitter = require('events'),
-    Maester = require('maester');
+import events from 'events';
+import maester from 'maester';
+import Task from './Task.js';
+import RunContext from './RunContext.js';
+import ArgvList from './ArgvList.js';
+import Utils from './Utils.js';
+import pkg from '../package.json';
 
-class JsMake extends EventEmitter {
+const emptyDescription = '';
+
+class JsMake {
     constructor() {
-        super();
+        this.events = new events.EventEmitter();
+        this.logger = maester;
+        this.utils = new Utils();
+
+        this.errors = {
+            unknownTask: Symbol('unknown task'),
+            taskValidationFailed: Symbol('task validation failed'),
+            exception: Symbol('exception thrown')
+        };
+
+        this.tasks = {};
+        this.description = emptyDescription;
+
+        this.argvList = new ArgvList({
+            'makefile': {
+                aliases: [ 'f' ],
+                type: String,
+                parameter: 'FILE',
+                description: 'Load tasks from FILE.',
+                min: 0,
+                max: undefined,
+                'default': [ 'makefile.js' ]
+            },
+            'tasks': {
+                type: Boolean,
+                aliases: [ 't' ],
+                description: 'Lists defined tasks.',
+                min: 0,
+                max: 1,
+                'default': false
+            },
+            'quiet': {
+                type: Boolean,
+                aliases: [ 'q' ],
+                description: 'Turns off output of non-critical log messages.',
+                min: 0,
+                max: 1,
+                'default': false
+            },
+            'version': {
+                type: Boolean,
+                aliases: [ 'v' ],
+                description: 'Displays the jsmake version.',
+                min: 0,
+                max: 1,
+                'default': false
+            },
+            'help': {
+                type: Boolean,
+                aliases: [ 'h', '?' ],
+                description: 'Displays this help message.',
+                min: 0,
+                max: 1,
+                'default': false
+            }
+        });
+    }
+
+    loadFile(filepath) {
+        require(filepath);
+    }
+
+    createTask(...args) {
+        return new Task(...args);
+    }
+
+    createRunContext(...args) {
+        return new RunContext(this, ...args);
+    }
+
+    desc(description) {
+        this.description = description;
+    }
+
+    task(p1, p2, p3) {
+        // p1 as task instance
+        if (p1 instanceof Task) {
+            this.tasks[p1.name] = p1;
+
+            if (p1.description === undefined) {
+                this.tasks[p1.name].setDescription(this.description);
+            }
+            this.description = emptyDescription;
+
+            return this.tasks[p1.name];
+        }
+
+        // p1 as taskname string, p2 as action
+        if (p2 !== undefined && p2.constructor === Function) {
+            this.tasks[p1] = new Task(p1, this.description, undefined, undefined, p2);
+            this.description = emptyDescription;
+
+            return this.tasks[p1];
+        }
+
+        // p1 as taskname string, p2 as prerequisites, p3 as action
+        this.tasks[p1] = new Task(p1, this.description, undefined, p2, p3);
+        this.description = emptyDescription;
+
+        return this.tasks[p1];
+    }
+
+    async exec(args) {
+        const runContext = this.createRunContext();
+
+        runContext.setArgs(args);
+
+        return await runContext.execute();
+    }
+
+    getTaskNames() {
+        return Object.keys(this.tasks).map(
+            (task) => this.tasks[task].name
+        );
+    }
+
+    getVersion() {
+        return pkg.version;
+    }
+
+    getHelp() {
+        const output = [
+            'Usage: jsmake [command] [parameters]',
+            ''
+        ];
+
+        for (const line of this.argvList.help()) {
+            output.push(line);
+        }
+
+        output.push('');
+        output.push(' Tasks                           Description');
+        output.push(' ------------------------------  -----------------------------------');
+
+        for (const key in this.tasks) {
+            const task = this.tasks[key];
+
+            let lineOutput = ` ${task.name}`;
+
+            output.push(`${lineOutput}${' '.repeat(32 - lineOutput.length)} ${task.description}`);
+
+            if (task.parameters !== undefined) {
+                const parametersHelp = task.parameters.help();
+
+                if (parametersHelp.length > 0) {
+                    output.push('   Parameters:');
+                    for (const line of parametersHelp) {
+                        output.push(`   ${line}`);
+                    }
+                    output.push('');
+                }
+            }
+        }
+
+        return output;
     }
 }
 
 const instance = new JsMake();
+
+if (global.jsmake === undefined) {
+    global.jsmake = instance;
+}
+
 module.exports = instance;

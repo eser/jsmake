@@ -1,13 +1,13 @@
 {
   "name": "jsmake",
-  "description": "JavaScript build tool, similar to Jake, Make or Rake",
+  "description": "JavaScript task tool, similar to Jake, Make or Rake",
   "keywords": [
     "build",
     "make",
     "rake",
     "jake"
   ],
-  "version": "0.0.1",
+  "version": "0.1.17",
   "homepage": "",
   "author": "Eser Ozvataf <eser@ozvataf.com>",
   "contributors": [
@@ -19,13 +19,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/eserozvataf/jsmake.git"
+    "url": "git+https://github.com/eserozvataf/jsmake.git"
   },
   "bugs": {
     "url": "https://github.com/eserozvataf/jsmake/issues",
     "email": "eser@ozvataf.com"
   },
   "license": "Apache-2.0",
+  "preferGlobal": true,
   "main": "./lib/index.js",
   "engines": {
     "node": ">=4.2.0"
@@ -38,11 +39,17 @@
     "lib",
     "bin"
   ],
-  "bin": {},
+  "bin": {
+    "jsmake": "./bin/jsmake"
+  },
   "dependencies": {
+    "cofounder": "^0.0.6",
     "colors": "^1.1.2",
-    "debug": "^2.2.0",
-    "maester": "^0.0.2"
+    "maester": "^0.0.11",
+    "npm": "^3.10.7",
+    "semver": "^5.3.0",
+    "update-notifier": "^1.0.2",
+    "yargs-parser": "^3.2.0"
   },
   "devDependencies": {}
 }
