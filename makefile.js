@@ -38,7 +38,7 @@ jsmake.task('default', [ 'test' ], function (argv) {
     this.logger.info(argv);
 });
 
-jsmake.task('default').events.on('complete', function () {
+jsmake.tasks.default.events.on('complete', function () {
     jsmake.logger.info('completed.');
 });
 

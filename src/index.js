@@ -46,19 +46,14 @@ class JsMake {
             return this.tasks[p1.name];
         }
 
-        // p1 as taskname string
-        if (p2 === undefined) {
-            return this.tasks[p1];
-        }
-
-        // p1 as taskname string, p2 as method
+        // p1 as taskname string, p2 as action
         if (p3 === undefined) {
             this.tasks[p1] = new Task(this, p1, [], p2);
 
             return this.tasks[p1];
         }
 
-        // p1 as taskname string, p2 as prerequisites, p3 as method
+        // p1 as taskname string, p2 as prerequisites, p3 as action
         this.tasks[p1] = new Task(this, p1, p2, p3);
 
         return this.tasks[p1];
@@ -86,7 +81,7 @@ class JsMake {
         this.logger.info('Usage: jsmake [command]');
         this.logger.info('-f, --makefile FILE: Load tasks from FILE.');
         this.logger.info('-t, --tasks:         Lists defined tasks.');
-        this.logger.info('-h, --help:          Displays this help message.');
+        this.logger.info('-?, --help:          Displays this help message.');
         this.logger.info('-v, --version:       Displays the jsmake version.');
         this.logger.info('-q, --quiet:         Turns off output of non-critical log messages.');
     }

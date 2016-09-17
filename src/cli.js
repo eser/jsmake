@@ -6,11 +6,41 @@ import pkg from '../package.json';
 
 let exitCode = 0;
 
-const argv = jsmake.utils.parseArgv(process.argv.slice(2));
+const argv = jsmake.utils.parseArgv(
+    process.argv.slice(2),
+    {
+        configuration: {
+            'short-option-groups': false,
+            'camel-case-expansion': true,
+            'dot-notation': false,
+            'parse-numbers': false,
+            'boolean-negation': false
+        },
+        alias: {
+            quiet: [ 'q' ],
+            version: [ 'v' ],
+            help: [ '?' ],
+            makefile: [ 'f' ],
+            tasks: [ 't' ]
+        },
+        'boolean': [
+            'quiet',
+            'version',
+            'help',
+            'tasks'
+        ],
+        'default': {
+            makefile: 'makefile.js'
+        },
+        string: [
+            'makefile'
+        ]
+    }
+);
 
 let minimumSeverity;
 
-if (argv.quiet || argv.q) {
+if (argv.quiet) {
     minimumSeverity = 'warn';
 }
 else {
@@ -31,18 +61,18 @@ process.on('exit', () => {
 updateNotifier({ pkg: pkg })
     .notify({ defer: false });
 
-if (argv.version || argv.v) {
+if (argv.version) {
     jsmake.version();
 }
-else if (argv.help || argv.h) {
+else if (argv.help) {
     jsmake.help();
 }
 else {
-    const makefilePath = argv.makefile || argv.f || 'makefile.js';
+    const makefilePath = path.join(process.cwd(), argv.makefile);
 
-    jsmake.loadFile(path.join(process.cwd(), makefilePath));
+    jsmake.loadFile(makefilePath);
 
-    if (argv.tasks || argv.t) {
+    if (argv.tasks) {
         jsmake.listTasks();
     }
     else {

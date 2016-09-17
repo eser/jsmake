@@ -18,8 +18,8 @@ class Utils {
         // this.mv = cofounder.mv;
     }
 
-    parseArgv(args) {
-        return yargsParser(args); // .replace('  ', ' ')
+    parseArgv(args, options) {
+        return yargsParser(args, options); // .replace('  ', ' ')
     }
 
     shell(command, args = [], env = {}) {
