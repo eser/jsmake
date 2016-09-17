@@ -30,6 +30,40 @@ As a build tool it offers,
 Execute `npm install jsmake -g` to install jsmake on your system.
 
 
+## Sample makefile.js
+
+jsmake's own [makefile.js](makefile.js) output is shown below:
+
+```bash
+$ jsmake -?
+Usage: jsmake [command] [parameters]
+
+ Tasks                           Description
+ ------------------------------  -----------------------------------
+ bump                            Bumps the package version for next release.
+   Parameters:
+   --type                        Increment type [major, minor, patch, premajor, preminor, prepatch or prerelease]
+
+ publish                         Publishes package to npm.
+ deps                            Reinstalls dependencies from npm.
+ build                           Builds the source code.
+```
+
+Also another examples are found in `examples/` folder, such as:
+
+- [Alternative syntax](samples/alternative-syntax-makefile.js)
+- [API](samples/api.js)
+- [Async/Promises](samples/async-promises-makefile.js)
+- [Events](samples/events-makefile.js)
+- [NPM Utils](samples/npm-utils-makefile.js)
+- [Pre/Post Tasks](samples/pre-post-tasks-makefile.js)
+- [Sequential Tasks](samples/sequential-tasks-makefile.js)
+- [Shell Commands](samples/shell-commands-makefile.js)
+- [Tasks with Descriptions](samples/tasks-with-descriptions-makefile.js)
+- [Tasks with Parameters](samples/tasks-with-parameters-makefile.js)
+- [Using with Gulp.js](samples/using-with-gulp-makefile.js)
+
+
 ## Todo List
 
 - Watch task

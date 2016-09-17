@@ -1,9 +1,17 @@
 jsmake.desc('Bumps the package version for next release.');
 jsmake.task('bump', function (argv) {
-    var version = jsmake.utils.packageJsonVersionBump('./package.json', 'patch');
+    var version = jsmake.utils.packageJsonVersionBump('./package.json', argv.type || 'patch');
 
     console.log('Bumped to version ' + version + '.');
 });
+
+jsmake.tasks.bump.parameters.setRule(
+    'type',
+    {
+        type: String,
+        description: 'Increment type [major, minor, patch, premajor, preminor, prepatch or prerelease]'
+    }
+);
 
 jsmake.desc('Publishes package to npm.');
 jsmake.task('publish', function (argv) {
