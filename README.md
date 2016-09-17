@@ -5,16 +5,23 @@
 [![dependencies][dep-image]][dep-url]
 [![license][license-image]][license-url]
 
-This project is designed to function as a build tool especially for node.js applications.
+This project is designed to function as a task tool especially for node.js applications.
 
 
-## Why jsmake?
+## What is the jsmake?
 
-jsmake is a tool to simplify building or deploying your software components from its sources by executing user created directives listed in `makefile.js`.
+jsmake is a task tool allows running user-defined tasks declared in `makefile.js`.
 
-Apart from other tools like gulp, jsmake only concentrates on executing tasks. But it can *also* [interoperate with tools like gulp](samples/using-with-gulp-makefile.js). So it's the right tool if you have set of duties needs to be executed on your codebase.
+In other words, if you execute some commands or code to accomplish some tasks on your codebase, jsmake is the right tool to do it.
 
-As a build tool it offers,
+With help of jsmake, project folder oriented tasks like building sources or deploying them on cloud can be done easily.
+
+jsmake is not a substitution for "build tools" like gulp.js. Apart from them, jsmake only concentrates on executing shell commands or user directives coded in JavaScript. So there are no pipelines, streams or plugins to be added as a dependency in `package.json`.
+
+Instead, jsmake is a complementary product for build tools. For example, it can [interoperate with tools like gulp](samples/using-with-gulp-makefile.js).
+
+
+As a task tool it offers,
 
 - Tasks with prerequisites,
 - Async task execution with Promises,
