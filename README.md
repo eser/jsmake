@@ -5,25 +5,19 @@
 [![dependencies][dep-image]][dep-url]
 [![license][license-image]][license-url]
 
-This project is designed to function as a task tool especially for node.js applications.
-
 
 ## What is the jsmake?
 
-jsmake is a task tool allows running user-defined tasks declared in `makefile.js`.
+jsmake is a task tool which runs user-defined tasks declared in `makefile.js`.
 
 In other words, if you execute some commands or code to accomplish some tasks on your codebase, jsmake is the right tool to do it.
 
-With help of jsmake, project folder oriented tasks like building sources or deploying them on cloud can be done easily.
-
-jsmake is not a substitution for "build tools" like gulp.js. Apart from them, jsmake only concentrates on executing shell commands or user directives coded in JavaScript. So there are no pipelines, streams or plugins to be added as a dependency in `package.json`.
-
-Instead, jsmake is a complementary product for build tools. For example, it can [interoperate with tools like gulp](samples/using-with-gulp-makefile.js).
-
+With the help of jsmake, project folder oriented tasks such as building sources, refactoring configuration files, deploying project on cloud can be done easily.
 
 As a task tool it offers,
 
 - Tasks with prerequisites,
+- Tasks own descriptions and parameters,
 - Async task execution with Promises,
 - Developer-friendly API to be used as a library,
 - Powerful command line argument parsing,
@@ -32,14 +26,51 @@ As a task tool it offers,
 - Event subscription for tasks and execution queues,
 
 
-## Quick start
+### jsmake vs Build Tools
+
+jsmake is not a substitution for "build tools" like gulp.js. Apart from them, jsmake only concentrates on executing shell commands or user directives coded in JavaScript. So there are no pipelines, streams or plugins to be added as a dependency in `package.json`.
+
+Instead, jsmake is a complementary product for build tools. For example, it can [interoperate with tools like gulp.js](samples/using-with-gulp-makefile.js).
+
+
+## Quick Start
 
 Execute `npm install jsmake -g` to install jsmake on your system.
 
+After installing jsmake, `makefile.js` needs to be created at the root of your codebase. 
 
-## Sample makefile.js
 
-jsmake's own [makefile.js](makefile.js) output is shown below:
+### Sample makefile.js
+
+A sample `makefile.js` look like:
+
+```js
+jsmake.desc('Says hi to someone.');
+jsmake.task('hello', function (argv) {
+    console.log('hi ' + argv.name);
+});
+```
+
+Other samples can be found in [samples/](samples/) folder, such as:
+
+- [Alternative syntax](samples/alternative-syntax-makefile.js)
+- [API](samples/api.js)
+- [Async/Promises](samples/async-promises-makefile.js)
+- [Events](samples/events-makefile.js)
+- [NPM Utils](samples/npm-utils-makefile.js)
+- [Pre/Post Tasks](samples/pre-post-tasks-makefile.js)
+- [Sequential Tasks](samples/sequential-tasks-makefile.js)
+- [Shell Commands](samples/shell-commands-makefile.js)
+- [Tasks with Descriptions](samples/tasks-with-descriptions-makefile.js)
+- [Tasks with Parameters](samples/tasks-with-parameters-makefile.js)
+- [Using with gulp.js](samples/using-with-gulp-makefile.js)
+
+
+### Getting Help and List of Tasks
+
+Running `jsmake` command will execute the task named `default`. If there is no task defined as `default`, jsmake will display help with the list of declared tasks. 
+
+Help output of [jsmake's own makefile.js](makefile.js) is shown below:
 
 ```bash
 $ jsmake -h
@@ -62,25 +93,8 @@ Usage: jsmake [command] [parameters]
  build                           Builds the source code.
 ```
 
-Also another examples are found in [samples/](samples/) folder, such as:
-
-- [Alternative syntax](samples/alternative-syntax-makefile.js)
-- [API](samples/api.js)
-- [Async/Promises](samples/async-promises-makefile.js)
-- [Events](samples/events-makefile.js)
-- [NPM Utils](samples/npm-utils-makefile.js)
-- [Pre/Post Tasks](samples/pre-post-tasks-makefile.js)
-- [Sequential Tasks](samples/sequential-tasks-makefile.js)
-- [Shell Commands](samples/shell-commands-makefile.js)
-- [Tasks with Descriptions](samples/tasks-with-descriptions-makefile.js)
-- [Tasks with Parameters](samples/tasks-with-parameters-makefile.js)
-- [Using with Gulp.js](samples/using-with-gulp-makefile.js)
-
 
 ## Todo List
-
-- Watch task
-- Publish tasks
 
 See [GitHub Projects](https://github.com/eserozvataf/jsmake/projects) for more.
 
