@@ -1,13 +1,13 @@
 {
   "name": "jsmake",
-  "description": "JavaScript build tool, similar to Jake, Make or Rake",
+  "description": "JavaScript task tool, similar to Jake, Make or Rake",
   "keywords": [
     "build",
     "make",
     "rake",
     "jake"
   ],
-  "version": "0.1.16",
+  "version": "0.1.17",
   "homepage": "",
   "author": "Eser Ozvataf <eser@ozvataf.com>",
   "contributors": [
