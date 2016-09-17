@@ -1,7 +1,6 @@
 import path from 'path';
 import updateNotifier from 'update-notifier';
 import maester from 'maester';
-import ArgvList from './ArgvList.js';
 import jsmake from './';
 import pkg from '../package.json';
 
@@ -20,51 +19,7 @@ const argv = jsmake.utils.parseArgv(
     }
 );
 
-const argvList = new ArgvList({
-    'makefile': {
-        aliases: [ 'f' ],
-        type: String,
-        parameter: 'FILE',
-        description: 'Load tasks from FILE.',
-        min: 0,
-        max: undefined,
-        'default': [ 'makefile.js' ]
-    },
-    'tasks': {
-        type: Boolean,
-        aliases: [ 't' ],
-        description: 'Lists defined tasks.',
-        min: 0,
-        max: 1,
-        'default': false
-    },
-    'quiet': {
-        type: Boolean,
-        aliases: [ 'q' ],
-        description: 'Turns off output of non-critical log messages.',
-        min: 0,
-        max: 1,
-        'default': false
-    },
-    'version': {
-        type: Boolean,
-        aliases: [ 'v' ],
-        description: 'Displays the jsmake version.',
-        min: 0,
-        max: 1,
-        'default': false
-    },
-    'help': {
-        type: Boolean,
-        aliases: [ '?' ],
-        description: 'Displays this help message.',
-        min: 0,
-        max: 1,
-        'default': false
-    }
-});
-
-const argValues = argvList.validate(argv);
+const argValues = jsmake.argvList.validate(argv);
 
 let minimumSeverity;
 

@@ -35,8 +35,14 @@ Execute `npm install jsmake -g` to install jsmake on your system.
 jsmake's own [makefile.js](makefile.js) output is shown below:
 
 ```bash
-$ jsmake -?
+$ jsmake -h
 Usage: jsmake [command] [parameters]
+
+--makefile FILE, -f           Load tasks from FILE.
+--tasks, -t                   Lists defined tasks.
+--quiet, -q                   Turns off output of non-critical log messages.
+--version, -v                 Displays the jsmake version.
+--help, -h, -?                Displays this help message.
 
  Tasks                           Description
  ------------------------------  -----------------------------------
@@ -49,7 +55,7 @@ Usage: jsmake [command] [parameters]
  build                           Builds the source code.
 ```
 
-Also another examples are found in `examples/` folder, such as:
+Also another examples are found in [samples/](samples/) folder, such as:
 
 - [Alternative syntax](samples/alternative-syntax-makefile.js)
 - [API](samples/api.js)
