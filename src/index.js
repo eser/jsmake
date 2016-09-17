@@ -67,23 +67,12 @@ class JsMake {
         return await runContext.execute();
     }
 
-    listTasks() {
-        for (const item in this.tasks) {
-            this.logger.info(this.tasks[item].name);
-        }
+    getTaskNames() {
+        return Object.keys(this.tasks).map((task) => this.tasks[task].name);
     }
 
-    version() {
-        this.logger.info(`Version ${pkg.version}`);
-    }
-
-    help() {
-        this.logger.info('Usage: jsmake [command]');
-        this.logger.info('-f, --makefile FILE: Load tasks from FILE.');
-        this.logger.info('-t, --tasks:         Lists defined tasks.');
-        this.logger.info('-?, --help:          Displays this help message.');
-        this.logger.info('-v, --version:       Displays the jsmake version.');
-        this.logger.info('-q, --quiet:         Turns off output of non-critical log messages.');
+    getVersion() {
+        return pkg.version;
     }
 }
 

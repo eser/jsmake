@@ -45,7 +45,10 @@ jsmake.tasks.default.events.on('complete', function () {
 jsmake.task({
     name: 'obj',
     action: function (argv) {
-        this.logger.info(argv);
+        this.logger.info(argv.name);
+    },
+    help: function () {
+        
     }
 });
 
