@@ -4,6 +4,7 @@ import Task from './Task.js';
 import RunContext from './RunContext.js';
 import ArgvList from './ArgvList.js';
 import Utils from './Utils.js';
+import alignedString from './alignedString.js';
 import pkg from '../package.json';
 
 const emptyDescription = '';
@@ -22,50 +23,6 @@ class JsMake {
 
         this.tasks = {};
         this.description = emptyDescription;
-
-        this.argvList = new ArgvList({
-            'makefile': {
-                aliases: [ 'f' ],
-                type: String,
-                parameter: 'FILE',
-                description: 'Load tasks from FILE.',
-                min: 0,
-                max: undefined,
-                'default': [ 'makefile.js' ]
-            },
-            'tasks': {
-                type: Boolean,
-                aliases: [ 't' ],
-                description: 'Lists defined tasks.',
-                min: 0,
-                max: 1,
-                'default': false
-            },
-            'quiet': {
-                type: Boolean,
-                aliases: [ 'q' ],
-                description: 'Turns off output of non-critical log messages.',
-                min: 0,
-                max: 1,
-                'default': false
-            },
-            'version': {
-                type: Boolean,
-                aliases: [ 'v' ],
-                description: 'Displays the jsmake version.',
-                min: 0,
-                max: 1,
-                'default': false
-            },
-            'help': {
-                type: Boolean,
-                aliases: [ 'h', '?' ],
-                description: 'Displays this help message.',
-                min: 0,
-                max: 1,
-                'default': false
-            }
-        });
     }
 
     loadFile(filepath) {
@@ -130,41 +87,21 @@ class JsMake {
         return pkg.version;
     }
 
-    getHelp() {
-        const output = [
-            'Usage: jsmake [command] [parameters]',
-            ''
-        ];
+    help(output, indent = 0) {
+        const indentChars = ' '.repeat(indent);
 
-        for (const line of this.argvList.help()) {
-            output.push(line);
-        }
-
-        output.push('');
-        output.push(' Tasks                           Description');
-        output.push(' ------------------------------  -----------------------------------');
+        output.push(`${indentChars}Tasks                            Description`);
+        output.push(`${indentChars}-------------------------------  -----------------------------------`);
 
         for (const key in this.tasks) {
             const task = this.tasks[key];
 
-            let lineOutput = ` ${task.name}`;
+            output.push(
+                alignedString([ 0, task.name, 35, task.description ], indentChars)
+            );
 
-            output.push(`${lineOutput}${' '.repeat(32 - lineOutput.length)} ${task.description}`);
-
-            if (task.parameters !== undefined) {
-                const parametersHelp = task.parameters.help();
-
-                if (parametersHelp.length > 0) {
-                    output.push('   Parameters:');
-                    for (const line of parametersHelp) {
-                        output.push(`   ${line}`);
-                    }
-                    output.push('');
-                }
-            }
+            task.parameters.help(output, indentChars + 4);
         }
-
-        return output;
     }
 }
 
