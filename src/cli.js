@@ -45,7 +45,7 @@ updateNotifier({ pkg: pkg })
     .notify({ defer: false });
 
 if (argValues.version.value) {
-    console.log(`jsmake version ${jsmake.getVersion()}`);
+    console.log(`${pkg.name} version ${jsmake.getVersion()}`);
 }
 else {
     for (const makefile of argValues.makefile.value) {

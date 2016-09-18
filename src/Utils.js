@@ -3,7 +3,6 @@ import os from 'os';
 import childProcess from 'child_process';
 import cofounder from 'cofounder';
 import semver from 'semver';
-import npm from 'npm';
 import yargsParser from 'yargs-parser';
 
 class Utils {
@@ -68,6 +67,7 @@ class Utils {
     }
 
     npmPublish() {
+        /*
         npm.load(
             { loaded: false },
             function (err) {
@@ -78,6 +78,8 @@ class Utils {
                 npm.commands.publish();
             }
         );
+        */
+        this.shell('npm publish');
     }
 }
 
