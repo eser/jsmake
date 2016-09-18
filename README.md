@@ -79,11 +79,11 @@ $ jsmake -h
 Usage: jsmake [command] [parameters]
 
 Parameters:
---makefile FILE, -f                Load tasks from FILE.
---tasks, -t                        Lists defined tasks.
---quiet, -q                        Turns off output of non-critical log messages.
---version, -v                      Displays the jsmake version.
---help, -h, -?                     Displays this help message.
+--makefile FILE, -f                Load tasks from FILE
+--tasks, -t                        Lists defined tasks
+--verbosity                        Sets verbosity of log messages [debug, warn, info, error]
+--version, -v                      Displays the jsmake version
+--help, -h, -?                     Displays this help message
 
   Tasks                            Description
   -------------------------------  -----------------------------------

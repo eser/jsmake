@@ -17,7 +17,6 @@ class JsMake {
 
         this.errors = {
             unknownTask: Symbol('unknown task'),
-            taskValidationFailed: Symbol('task validation failed'),
             exception: Symbol('exception thrown')
         };
 
@@ -26,6 +25,7 @@ class JsMake {
     }
 
     loadFile(filepath) {
+        maester.debug(`loading makefile '${filepath}'...`);
         require(filepath);
     }
 
@@ -69,12 +69,24 @@ class JsMake {
         return this.tasks[p1];
     }
 
-    async exec(args) {
+    async execString(args) {
         const runContext = this.createRunContext();
 
         runContext.setArgs(args);
 
-        return await runContext.execute();
+        await runContext.execute();
+
+        return runContext;
+    }
+
+    async exec(argv) {
+        const runContext = this.createRunContext();
+
+        runContext.setArgv(argv);
+
+        await runContext.execute();
+
+        return runContext;
     }
 
     getTaskNames() {

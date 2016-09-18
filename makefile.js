@@ -15,6 +15,7 @@ jsmake.tasks.bump.parameters.setRule(
 
 jsmake.desc('Publishes package to npm.');
 jsmake.task('publish', function (argv) {
+    throw new Error('eser');
     jsmake.utils.npmPublish();
 });
 

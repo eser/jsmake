@@ -4,5 +4,6 @@ jsmake.task('sayHello', function (argv) {
     console.log('hello ' + argv.name);
 });
 
-jsmake.exec('sayHello --name=eser');
+jsmake.execString('sayHello --name=eser');
+jsmake.exec({ _: [ 'sayHello' ], name: 'seyma' });
 jsmake.tasks.sayHello.execute({ name: 'europe' });

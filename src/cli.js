@@ -25,7 +25,7 @@ const argvList = new ArgvList({
         aliases: [ 'f' ],
         type: String,
         parameter: 'FILE',
-        description: 'Load tasks from FILE.',
+        description: 'Load tasks from FILE',
         min: 0,
         max: undefined,
         'default': [ 'makefile.js' ]
@@ -33,23 +33,22 @@ const argvList = new ArgvList({
     'tasks': {
         type: Boolean,
         aliases: [ 't' ],
-        description: 'Lists defined tasks.',
+        description: 'Lists defined tasks',
         min: 0,
         max: 1,
         'default': false
     },
-    'quiet': {
-        type: Boolean,
-        aliases: [ 'q' ],
-        description: 'Turns off output of non-critical log messages.',
+    'verbosity': {
+        type: String,
+        description: 'Sets verbosity of log messages [debug, warn, info, error]',
         min: 0,
         max: 1,
-        'default': false
+        'default': 'info'
     },
     'version': {
         type: Boolean,
         aliases: [ 'v' ],
-        description: 'Displays the jsmake version.',
+        description: 'Displays the jsmake version',
         min: 0,
         max: 1,
         'default': false
@@ -57,7 +56,7 @@ const argvList = new ArgvList({
     'help': {
         type: Boolean,
         aliases: [ 'h', '?' ],
-        description: 'Displays this help message.',
+        description: 'Displays this help message',
         min: 0,
         max: 1,
         'default': false
@@ -66,16 +65,7 @@ const argvList = new ArgvList({
 
 const argValues = argvList.validate(argv);
 
-let minimumSeverity;
-
-if (argValues.quiet.value) {
-    minimumSeverity = 'warn';
-}
-else {
-    minimumSeverity = 'info';
-}
-
-const logger = maester.addLogger('ConsoleLogger', minimumSeverity);
+const logger = maester.addLogger('ConsoleLogger', argValues.verbosity.value || 'info');
 
 process.on('uncaughtException', (err) => {
     console.error(err.stack);
@@ -119,9 +109,9 @@ else {
         console.log(output.join('\n'));
     }
     else {
-        const runContext = jsmake.createRunContext();
-
-        runContext.setArgv(argv);
-        runContext.execute();
+        jsmake.exec(argv)
+            .catch(function (err) {
+                maester.error(err);
+            });
     }
 }

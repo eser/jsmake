@@ -1,9 +1,6 @@
-import maester from 'maester';
-
 class RunContext {
     constructor(owner) {
         this.owner = owner;
-        this.logger = maester;
 
         this.executionQueue = [];
     }
@@ -52,54 +49,46 @@ class RunContext {
         }
 
         if (!(taskname in this.owner.tasks)) {
-            this.logger.error(`unknown task name - ${taskname}`);
-
-            return { error: this.owner.errors.unknownTask, taskname: taskname };
+            throw new Error({
+                message: `unknown task name - ${taskname}`,
+                error: this.owner.errors.unknownTask,
+                taskname: taskname
+            });
         }
 
-        return { error: null, task: this.owner.tasks[taskname] };
+        return this.owner.tasks[taskname];
     }
 
     async runExecutionQueue() {
-        while (this.executionQueue.length > 0) {
-            const taskname = this.executionQueue.shift(),
+        let task;
+
+        try {
+            while (this.executionQueue.length > 0) {
+                const taskname = this.executionQueue.shift();
+
                 task = this.owner.tasks[taskname];
 
-            await task.execute(this.argv, this);
+                this.owner.logger.debug('running task ${task.name}');
+
+                await task.execute(this.argv, this);
+            }
+        }
+        catch (ex) {
+            throw new Error({
+                message: 'exception is thrown during task execution',
+                error: this.owner.errors.exception,
+                exception: ex,
+                task: task
+            });
         }
     }
 
     async execute() {
-        try {
-            const validateResult = this.validateArgvAndGetTask();
+        const task = this.validateArgvAndGetTask();
 
-            if (validateResult.error !== null) {
-                return validateResult;
-            }
+        this.addTask(task);
 
-            const task = validateResult.task;
-
-            if (task.validate !== undefined && !task.validate(this.argv)) {
-                this.logger.error(`task validation failed - ${task.name}`);
-
-                if (task.help !== undefined) {
-                    task.help();
-                }
-
-                return { error: this.owner.errors.taskValidationFailed, task: task };
-            }
-
-            this.addTask(task);
-
-            await this.runExecutionQueue();
-
-            return { error: null };
-        }
-        catch (ex) {
-            this.logger.error(ex);
-
-            return { error: this.owner.errors.exception, exception: ex };
-        }
+        await this.runExecutionQueue();
     }
 }
 
