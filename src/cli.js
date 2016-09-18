@@ -1,6 +1,7 @@
 import path from 'path';
 import updateNotifier from 'update-notifier';
 import maester from 'maester';
+import ArgvList from './ArgvList.js';
 import jsmake from './';
 import pkg from '../package.json';
 
@@ -19,7 +20,51 @@ const argv = jsmake.utils.parseArgv(
     }
 );
 
-const argValues = jsmake.argvList.validate(argv);
+const argvList = new ArgvList({
+    'makefile': {
+        aliases: [ 'f' ],
+        type: String,
+        parameter: 'FILE',
+        description: 'Load tasks from FILE.',
+        min: 0,
+        max: undefined,
+        'default': [ 'makefile.js' ]
+    },
+    'tasks': {
+        type: Boolean,
+        aliases: [ 't' ],
+        description: 'Lists defined tasks.',
+        min: 0,
+        max: 1,
+        'default': false
+    },
+    'quiet': {
+        type: Boolean,
+        aliases: [ 'q' ],
+        description: 'Turns off output of non-critical log messages.',
+        min: 0,
+        max: 1,
+        'default': false
+    },
+    'version': {
+        type: Boolean,
+        aliases: [ 'v' ],
+        description: 'Displays the jsmake version.',
+        min: 0,
+        max: 1,
+        'default': false
+    },
+    'help': {
+        type: Boolean,
+        aliases: [ 'h', '?' ],
+        description: 'Displays this help message.',
+        min: 0,
+        max: 1,
+        'default': false
+    }
+});
+
+const argValues = argvList.validate(argv);
 
 let minimumSeverity;
 
@@ -63,7 +108,15 @@ else {
             argValues.help.value ||
             (argv._.length === 0 && jsmake.tasks.default === undefined)
         ) {
-        console.log(jsmake.getHelp().join('\n'));
+        const output = [
+            'Usage: jsmake [command] [parameters]',
+            ''
+        ];
+
+        argvList.help(output, 0);
+        jsmake.help(output, 2);
+
+        console.log(output.join('\n'));
     }
     else {
         const runContext = jsmake.createRunContext();

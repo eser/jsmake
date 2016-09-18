@@ -68,7 +68,9 @@ Other samples can be found in [samples/](samples/) folder, such as:
 
 ### Getting Help and List of Tasks
 
-Running `jsmake` command will execute the task named `default`. If there is no task defined as `default`, jsmake will display help with the list of declared tasks. 
+Running `jsmake` command will execute the task named `default`. If there is no task defined as `default`, jsmake will display the help message.
+
+Help content consists of usage of jsmake, the list of declared tasks and their parameters and descriptions. These information also can be displayed with `jsmake -h` command.
 
 Help output of [jsmake's own makefile.js](makefile.js) is shown below:
 
@@ -76,21 +78,22 @@ Help output of [jsmake's own makefile.js](makefile.js) is shown below:
 $ jsmake -h
 Usage: jsmake [command] [parameters]
 
---makefile FILE, -f           Load tasks from FILE.
---tasks, -t                   Lists defined tasks.
---quiet, -q                   Turns off output of non-critical log messages.
---version, -v                 Displays the jsmake version.
---help, -h, -?                Displays this help message.
+Parameters:
+--makefile FILE, -f                Load tasks from FILE.
+--tasks, -t                        Lists defined tasks.
+--quiet, -q                        Turns off output of non-critical log messages.
+--version, -v                      Displays the jsmake version.
+--help, -h, -?                     Displays this help message.
 
- Tasks                           Description
- ------------------------------  -----------------------------------
- bump                            Bumps the package version for next release.
-   Parameters:
-   --type                        Increment type [major, minor, patch, premajor, preminor, prepatch or prerelease]
+  Tasks                            Description
+  -------------------------------  -----------------------------------
+  bump                             Bumps the package version for next release.
+    Parameters:
+    --type                         Increment type [major, minor, patch, premajor, preminor, prepatch or prerelease]
 
- publish                         Publishes package to npm.
- deps                            Reinstalls dependencies from npm.
- build                           Builds the source code.
+  publish                          Publishes package to npm.
+  deps                             Reinstalls dependencies from npm.
+  build                            Builds the source code.
 ```
 
 

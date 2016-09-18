@@ -1,3 +1,5 @@
+import alignedString from './alignedString.js';
+
 // {
 //     'version': {
 //         type: Boolean,
@@ -118,28 +120,34 @@ class ArgvList {
         return values;
     }
 
-    help() {
-        const output = [];
+    help(output, indent = 0) {
+        const indentChars = ' '.repeat(indent);
 
-        for (const key in this.rules) {
-            const rule = this.rules[key];
+        if (Object.keys(this.rules).length > 0) {
+            output.push(`${indentChars}Parameters:`);
 
-            let lineOutput = `${(key.length > 1) ? '--' : '-'}${key}`;
+            for (const key in this.rules) {
+                const rule = this.rules[key];
 
-            if (rule.parameter !== undefined) {
-                lineOutput += ` ${rule.parameter}`;
-            }
+                let lineOutput = `${(key.length > 1) ? '--' : '-'}${key}`;
 
-            if (rule.aliases !== undefined) {
-                for (const alias of rule.aliases) {
-                    lineOutput += `, ${(alias.length > 1) ? '--' : '-'}${alias}`;
+                if (rule.parameter !== undefined) {
+                    lineOutput += ` ${rule.parameter}`;
                 }
+
+                if (rule.aliases !== undefined) {
+                    for (const alias of rule.aliases) {
+                        lineOutput += `, ${(alias.length > 1) ? '--' : '-'}${alias}`;
+                    }
+                }
+
+                output.push(
+                    alignedString([ 0, lineOutput, 35, rule.description ], indentChars)
+                );
             }
 
-            output.push(`${lineOutput}${' '.repeat(29 - lineOutput.length)} ${rule.description}`);
+            output.push('');
         }
-
-        return output;
     }
 }
 
