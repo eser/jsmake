@@ -2,9 +2,8 @@ import events from 'events';
 import maester from 'maester';
 import Task from './Task.js';
 import RunContext from './RunContext.js';
-import ArgvList from './ArgvList.js';
 import Utils from './Utils.js';
-import alignedString from './alignedString.js';
+import alignedString from './utils/alignedString.js';
 import pkg from '../package.json';
 
 const emptyDescription = '';
@@ -100,19 +99,17 @@ class JsMake {
     }
 
     help(output, indent = 0) {
-        const indentChars = ' '.repeat(indent);
-
-        output.push(`${indentChars}Tasks                            Description`);
-        output.push(`${indentChars}-------------------------------  -----------------------------------`);
+        output.push(alignedString([ indent, 'Tasks                            Description                        ' ]));
+        output.push(alignedString([ indent, '-------------------------------  -----------------------------------' ]));
 
         for (const key in this.tasks) {
             const task = this.tasks[key];
 
             output.push(
-                alignedString([ 0, task.name, 35, task.description ], indentChars)
+                alignedString([ indent, task.name, 35, task.description ])
             );
 
-            task.parameters.help(output, indentChars + 4);
+            task.parameters.help(output, indent + 4);
         }
     }
 }

@@ -5,6 +5,7 @@ jsmake.task('bump', function (argv) {
     console.log('Bumped to version ' + version + '.');
 });
 
+/*
 jsmake.tasks.bump.parameters.setRule(
     'type',
     {
@@ -12,6 +13,7 @@ jsmake.tasks.bump.parameters.setRule(
         description: 'Increment type [major, minor, patch, premajor, preminor, prepatch or prerelease]'
     }
 );
+*/
 
 jsmake.desc('Publishes package to npm.');
 jsmake.task('publish', function (argv) {

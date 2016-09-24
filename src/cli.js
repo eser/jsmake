@@ -1,69 +1,75 @@
 import path from 'path';
 import updateNotifier from 'update-notifier';
 import maester from 'maester';
-import ArgvList from './ArgvList.js';
+import consultant from 'consultant';
 import jsmake from './';
 import pkg from '../package.json';
 
 let exitCode = 0;
 
-const argv = jsmake.utils.parseArgv(
-    process.argv.slice(2),
+const argv = consultant.parse(process.argv.slice(2));
+
+const argvPage = consultant.createPage(
+    'Homepage',
     {
-        configuration: {
-            'short-option-groups': false,
-            'camel-case-expansion': true,
-            'dot-notation': false,
-            'parse-numbers': false,
-            'boolean-negation': false
+        makefile: {
+            type: String,
+            aliases: [ 'f' ],
+            label: 'Makefile',
+            parameter: 'FILE',
+            description: 'Load tasks from FILE',
+            'default': [ 'makefile.js' ],
+            uiHidden: false,
+            min: 0,
+            max: undefined,
+            validate: function (value) {
+                return value.length >= 3 || 'minimum 3 chars required';
+            }
+        },
+        tasks: {
+            type: Boolean,
+            aliases: [ 't' ],
+            label: 'Tasks',
+            description: 'Lists defined tasks',
+            'default': false,
+            uiHidden: true,
+            min: 0,
+            max: 1
+        },
+        verbosity: {
+            type: String,
+            label: 'Verbosity',
+            description: 'Sets verbosity of log messages [debug, warn, info, error]',
+            'default': 'info',
+            values: [ 'debug', 'warn', 'info', 'error' ],
+            uiHidden: true,
+            min: 0,
+            max: 1
+        },
+        version: {
+            type: Boolean,
+            aliases: [ 'v' ],
+            label: 'Version',
+            description: 'Displays the jsmake version',
+            'default': false,
+            uiHidden: true,
+            min: 0,
+            max: 1
+        },
+        help: {
+            type: Boolean,
+            aliases: [ 'h', '?' ],
+            label: 'Help',
+            description: 'Displays this help message',
+            'default': false,
+            uiHidden: true,
+            min: 0,
+            max: 1
         }
     }
 );
 
-const argvList = new ArgvList({
-    'makefile': {
-        aliases: [ 'f' ],
-        type: String,
-        parameter: 'FILE',
-        description: 'Load tasks from FILE',
-        min: 0,
-        max: undefined,
-        'default': [ 'makefile.js' ]
-    },
-    'tasks': {
-        type: Boolean,
-        aliases: [ 't' ],
-        description: 'Lists defined tasks',
-        min: 0,
-        max: 1,
-        'default': false
-    },
-    'verbosity': {
-        type: String,
-        description: 'Sets verbosity of log messages [debug, warn, info, error]',
-        min: 0,
-        max: 1,
-        'default': 'info'
-    },
-    'version': {
-        type: Boolean,
-        aliases: [ 'v' ],
-        description: 'Displays the jsmake version',
-        min: 0,
-        max: 1,
-        'default': false
-    },
-    'help': {
-        type: Boolean,
-        aliases: [ 'h', '?' ],
-        description: 'Displays this help message',
-        min: 0,
-        max: 1,
-        'default': false
-    }
-});
-
-const argValues = argvList.validate(argv);
+const argValues = argvPage.validate(argv);
 
 const logger = maester.addLogger('ConsoleLogger', argValues.verbosity.value || 'info');
 
@@ -103,7 +109,7 @@ else {
             ''
         ];
 
-        argvList.help(output, 0);
+        argvPage.help(output);
         jsmake.help(output, 2);
 
         console.log(output.join('\n'));
