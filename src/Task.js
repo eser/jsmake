@@ -1,5 +1,5 @@
 import events from 'events';
-import ArgvList from './ArgvList.js';
+import consultant from 'consultant';
 
 class Task {
     static notAssigned() {
@@ -19,7 +19,7 @@ class Task {
         this.description = description;
 
         if (parameters === undefined) {
-            this.parameters = new ArgvList();
+            this.parameters = consultant.createRuleCollection();
         }
         else {
             this.parameters = parameters;
