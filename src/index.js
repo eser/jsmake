@@ -109,7 +109,7 @@ class JsMake {
                 alignedString([ indent, task.name, 35, task.description ])
             );
 
-            task.parameters.help(output, indent + 4);
+            task.parameters.help(output, [ indent + 4, 35 ]);
         }
     }
 }
