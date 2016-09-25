@@ -1,4 +1,4 @@
-/*global process, console */
+/*global process, console  */
 import path from 'path';
 import updateNotifier from 'update-notifier';
 import maester from 'maester';
@@ -38,6 +38,15 @@ const argvPage = consultant.createPage(
             aliases: [ 't' ],
             label: 'Tasks',
             description: 'Lists defined tasks',
+            'default': false,
+            uiHidden: true,
+            min: 0,
+            max: 1
+        },
+        taskmenu: {
+            type: Boolean,
+            label: 'Task Menu',
+            description: 'Displays the task menu',
             'default': false,
             uiHidden: true,
             min: 0,
@@ -111,10 +120,7 @@ else {
             console.log(task);
         }
     }
-    else if (
-            argv.help ||
-            (argv._.length === 0 && jsmake.tasks.default === undefined)
-        ) {
+    else if (argv.help) {
         const output = [
             'Usage: jsmake [command] [parameters]',
             ''
@@ -124,6 +130,27 @@ else {
         jsmake.help(output, 2);
 
         console.log(output.join('\n'));
+    }
+    else if (
+        argv.taskmenu ||
+        (argv._.length === 0 && jsmake.tasks.default === undefined)
+        ) {
+        const menuRuleCollection = consultant.createRuleCollection({
+            _: {
+                type: String,
+                label: 'Task',
+                description: 'The task to be executed',
+                values: jsmake.getTaskNames(),
+                min: 0,
+                max: undefined
+            }
+        });
+
+        menuRuleCollection.inquiry()
+            .then((result) => jsmake.exec(result.argv))
+            .catch((err) => {
+                maester.error(err);
+            });
     }
     else {
         jsmake.exec(argv)
