@@ -10,7 +10,7 @@
     "rake",
     "jake"
   ],
-  "version": "0.2.4",
+  "version": "0.2.5",
   "homepage": "",
   "author": "Eser Ozvataf <eser@ozvataf.com>",
   "contributors": [
@@ -46,7 +46,7 @@
     "jsmake": "./bin/jsmake"
   },
   "dependencies": {
-    "cofounder": "^0.0.7",
+    "cofounder": "^0.0.8",
     "colors": "^1.1.2",
     "consultant": "^0.1.8",
     "maester": "^0.0.13",
