@@ -1,3 +1,4 @@
+/*global process, console */
 import path from 'path';
 import updateNotifier from 'update-notifier';
 import maester from 'maester';
@@ -6,8 +7,6 @@ import jsmake from './';
 import pkg from '../package.json';
 
 let exitCode = 0;
-
-const argv = consultant.parse(process.argv.slice(2));
 
 const argvPage = consultant.createPage(
     'Homepage',
@@ -19,12 +18,20 @@ const argvPage = consultant.createPage(
             parameter: 'FILE',
             description: 'Load tasks from FILE',
             'default': [ 'makefile.js' ],
-            uiHidden: false,
             min: 0,
             max: undefined,
             validate: function (value) {
                 return value.length >= 3 || 'minimum 3 chars required';
             }
+        },
+        _: {
+            type: String,
+            label: 'Task',
+            description: 'Tasks to execute',
+            'default': [],
+            helpHidden: true,
+            min: 0,
+            max: undefined
         },
         tasks: {
             type: Boolean,
@@ -69,9 +76,13 @@ const argvPage = consultant.createPage(
     }
 );
 
-const argValues = argvPage.validate(argv);
+const argValues = argvPage.validate(
+    consultant.parse(process.argv.slice(2))
+);
 
-const logger = maester.addLogger('ConsoleLogger', argValues.verbosity.value || 'info');
+const argv = argValues.argv;
+
+const logger = maester.addLogger('ConsoleLogger', argv.verbosity);
 
 process.on('uncaughtException', (err) => {
     console.error(err.stack);
@@ -85,23 +96,23 @@ process.on('exit', () => {
 updateNotifier({ pkg: pkg })
     .notify({ defer: false });
 
-if (argValues.version.value) {
+if (argv.version) {
     console.log(`${pkg.name} version ${jsmake.getVersion()}`);
 }
 else {
-    for (const makefile of argValues.makefile.value) {
+    for (const makefile of argv.makefile) {
         const makefilePath = path.join(process.cwd(), makefile);
 
         jsmake.loadFile(makefilePath);
     }
 
-    if (argValues.tasks.value) {
+    if (argv.tasks) {
         for (const task of jsmake.getTaskNames()) {
             console.log(task);
         }
     }
     else if (
-            argValues.help.value ||
+            argv.help ||
             (argv._.length === 0 && jsmake.tasks.default === undefined)
         ) {
         const output = [
@@ -116,7 +127,7 @@ else {
     }
     else {
         jsmake.exec(argv)
-            .catch(function (err) {
+            .catch((err) => {
                 maester.error(err);
             });
     }
