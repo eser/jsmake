@@ -11,8 +11,8 @@ class Utils {
         this.rm = cofounder.rm;
         this.rmdir = cofounder.rmdir;
         this.mkdir = cofounder.mkdir;
+        this.cp = cofounder.cp;
         // TODO
-        // this.cp = cofounder.cp;
         // this.mv = cofounder.mv;
     }
 
