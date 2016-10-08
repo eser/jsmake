@@ -2,7 +2,7 @@ import events from 'events';
 import consultant from 'consultant';
 
 class Task {
-    static notAssigned() {
+    static async notAssigned() {
         throw new Error('task\'s action is not assigned');
     }
 
@@ -56,29 +56,18 @@ class Task {
         this.action = action;
     }
 
-    async execute(argv, context) {
-        if (this.action !== this.constructor.notAssigned) {
-            let action;
+    async execute(argv) {
+        try {
+            const ret = this.action(argv);
 
-            if (context === undefined) {
-                action = this.action;
-            }
-            else {
-                action = this.action.bind(context);
+            if (ret instanceof Promise) {
+                await ret;
             }
 
-            try {
-                const ret = action(argv);
-
-                if (ret instanceof Promise) {
-                    await ret;
-                }
-
-                this.events.emit('done');
-            }
-            catch (ex) {
-                this.events.emit('error', ex);
-            }
+            this.events.emit('done');
+        }
+        catch (ex) {
+            this.events.emit('error', ex);
         }
 
         this.events.emit('complete');

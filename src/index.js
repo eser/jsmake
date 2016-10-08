@@ -68,20 +68,8 @@ class JsMake {
         return this.tasks[p1];
     }
 
-    async execString(args) {
-        const runContext = this.createRunContext();
-
-        runContext.setArgs(args);
-
-        await runContext.execute();
-
-        return runContext;
-    }
-
     async exec(argv) {
-        const runContext = this.createRunContext();
-
-        runContext.setArgv(argv);
+        const runContext = this.createRunContext(argv);
 
         await runContext.execute();
 
