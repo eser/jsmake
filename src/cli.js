@@ -85,13 +85,10 @@ const argvPage = consultant.createPage(
     }
 );
 
-const argValues = argvPage.validate(
-    consultant.parse(process.argv.slice(2))
-);
+const argv = consultant.parse(process.argv.slice(2)),
+    argValidated = argvPage.validate(argv);
 
-const argv = argValues.argv;
-
-const logger = maester.addLogger('ConsoleLogger', argv.verbosity);
+const logger = maester.addLogger('ConsoleLogger', argValidated.argv.verbosity);
 
 process.on('uncaughtException', (err) => {
     console.error(err.stack);
@@ -105,22 +102,22 @@ process.on('exit', () => {
 updateNotifier({ pkg: pkg })
     .notify({ defer: false });
 
-if (argv.version) {
+if (argValidated.argv.version) {
     console.log(`${pkg.name} version ${jsmake.getVersion()}`);
 }
 else {
-    for (const makefile of argv.makefile) {
+    for (const makefile of argValidated.argv.makefile) {
         const makefilePath = path.join(process.cwd(), makefile);
 
         jsmake.loadFile(makefilePath);
     }
 
-    if (argv.tasks) {
+    if (argValidated.argv.tasks) {
         for (const task of jsmake.getTaskNames()) {
             console.log(task);
         }
     }
-    else if (argv.help) {
+    else if (argValidated.argv.help) {
         const output = [
             'Usage: jsmake [command] [parameters]',
             ''
@@ -132,8 +129,8 @@ else {
         console.log(output.join('\n'));
     }
     else if (
-        argv.taskmenu ||
-        (argv._.length === 0 && jsmake.tasks.default === undefined)
+        argValidated.argv.taskmenu ||
+        (argValidated.argv._.length === 0 && jsmake.tasks.default === undefined)
         ) {
         const menuRuleCollection = consultant.createRuleCollection({
             _: {

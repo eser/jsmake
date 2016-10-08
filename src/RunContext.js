@@ -1,16 +1,9 @@
 class RunContext {
-    constructor(owner) {
+    constructor(owner, argv) {
         this.owner = owner;
+        this.argv = argv;
 
         this.executionQueue = [];
-    }
-
-    setArgv(argv) {
-        this.argv = argv;
-    }
-
-    setArgs(args) {
-        this.argv = this.owner.utils.parseArgv(args);
     }
 
     addTask(task) {
@@ -70,7 +63,7 @@ class RunContext {
 
                 this.owner.logger.debug('running task ${task.name}');
 
-                await task.execute(this.argv, this);
+                await task.execute(this.argv);
             }
         }
         catch (ex) {
