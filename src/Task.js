@@ -58,7 +58,8 @@ class Task {
 
     async execute(argv) {
         try {
-            const ret = this.action(argv);
+            const argValidated = this.parameters.validate(argv),
+                ret = this.action(argv, argValidated);
 
             if (ret instanceof Promise) {
                 await ret;
