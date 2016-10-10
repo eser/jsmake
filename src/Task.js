@@ -1,9 +1,10 @@
 import events from 'events';
 import consultant from 'consultant';
+import TaskException from './TaskException.js';
 
-class Task {
+export default class Task {
     static async notAssigned() {
-        throw new Error('task\'s action is not assigned');
+        throw new TaskException('task\'s action is not assigned');
     }
 
     static from(source) {
@@ -58,11 +59,13 @@ class Task {
 
     async execute(argv) {
         try {
-            const argValidated = this.parameters.validate(argv),
-                ret = this.action(argv, argValidated);
+            if (this.action !== this.constructor.notAssigned || this.prerequisites.length === 0) {
+                const argValidated = this.parameters.validate(argv),
+                    ret = this.action(argv, argValidated);
 
-            if (ret instanceof Promise) {
-                await ret;
+                if (ret instanceof Promise) {
+                    await ret;
+                }
             }
 
             this.events.emit('done');
@@ -74,5 +77,3 @@ class Task {
         this.events.emit('complete');
     }
 }
-
-export default Task;
