@@ -1,4 +1,6 @@
-class RunContext {
+import TaskException from './TaskException.js';
+
+export default class RunContext {
     constructor(owner, argv) {
         this.owner = owner;
         this.argv = argv;
@@ -42,7 +44,7 @@ class RunContext {
         }
 
         if (!(taskname in this.owner.tasks)) {
-            throw new Error({
+            throw new TaskException({
                 message: `unknown task name - ${taskname}`,
                 error: this.owner.errors.unknownTask,
                 taskname: taskname
@@ -67,7 +69,7 @@ class RunContext {
             }
         }
         catch (ex) {
-            throw new Error({
+            throw new TaskException({
                 message: 'exception is thrown during task execution',
                 error: this.owner.errors.exception,
                 exception: ex,
@@ -84,5 +86,3 @@ class RunContext {
         await this.runExecutionQueue();
     }
 }
-
-export default RunContext;
