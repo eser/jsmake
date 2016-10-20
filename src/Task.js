@@ -1,8 +1,8 @@
-import events from 'events';
+import EventEmitter from 'es6-eventemitter';
 import consultant from 'consultant';
-import TaskException from './TaskException.js';
+import { TaskException } from './TaskException.js';
 
-export default class Task {
+export class Task {
     static async notAssigned() {
         throw new TaskException('task\'s action is not assigned');
     }
@@ -14,7 +14,7 @@ export default class Task {
     }
 
     constructor(name, description, parameters, prerequisites, action) {
-        this.events = new events.EventEmitter();
+        this.events = new EventEmitter();
 
         this.name = name;
         this.description = description;
@@ -77,3 +77,5 @@ export default class Task {
         this.events.emit('complete');
     }
 }
+
+export default Task;
