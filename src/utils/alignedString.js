@@ -1,4 +1,4 @@
-export default function alignedString(input, initial = '') {
+export function alignedString(input, initial = '') {
     let output = initial;
 
     while (input.length >= 2) {
@@ -13,3 +13,5 @@ export default function alignedString(input, initial = '') {
 
     return output;
 }
+
+export default alignedString;

@@ -1,6 +1,6 @@
-import TaskException from './TaskException.js';
+import { TaskException } from './TaskException.js';
 
-export default class RunContext {
+export class RunContext {
     constructor(owner, argv) {
         this.owner = owner;
         this.argv = argv;
@@ -86,3 +86,5 @@ export default class RunContext {
         await this.runExecutionQueue();
     }
 }
+
+export default RunContext;

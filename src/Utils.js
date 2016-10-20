@@ -4,7 +4,7 @@ import childProcess from 'child_process';
 import cofounder from 'cofounder';
 import semver from 'semver';
 
-export default class Utils {
+export class Utils {
     constructor() {
         this.scanDir = cofounder.scanDir;
         this.glob = cofounder.glob;
@@ -77,3 +77,5 @@ export default class Utils {
         this.shell('npm publish');
     }
 }
+
+export default Utils;
