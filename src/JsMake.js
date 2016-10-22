@@ -80,7 +80,7 @@ export class JsMake {
 
     getTaskNames() {
         return Object.keys(this.tasks).map(
-            (task) => this.tasks[task].name
+            (taskKey) => this.tasks[taskKey].name
         );
     }
 

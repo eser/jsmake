@@ -4,6 +4,7 @@ import updateNotifier from 'update-notifier';
 import maester from 'maester';
 import consultant from 'consultant';
 import jsmake from './';
+import { alignedString } from './utils/alignedString.js';
 import pkg from '../package.json';
 
 let exitCode = 0;
@@ -132,18 +133,32 @@ else {
         argValidated.argv.taskmenu ||
         (argValidated.argv._.length === 0 && jsmake.tasks.default === undefined)
         ) {
-        const menuRuleCollection = consultant.createRuleCollection({
-            _: {
-                type: String,
-                label: 'Task',
-                description: 'The task to be executed',
-                values: jsmake.getTaskNames(),
-                min: 0,
-                max: undefined
-            }
-        });
+        const taskPage = consultant.createPage(
+            'Task Menu',
+            {
+                _: {
+                    type: String,
+                    label: 'Task',
+                    description: 'The task to be executed',
+                    
+                    values: Object.keys(jsmake.tasks).map(
+                        (taskKey) => {
+                            const task = jsmake.tasks[taskKey];
 
-        menuRuleCollection.inquiry()
+                            return {
+                                name: alignedString([ 0, task.name, 35, task.description ]),
+                                value: task.name,
+                                'short': task.name
+                            };
+                        }
+                    ),
+                    min: 0,
+                    max: undefined
+                }
+            }
+        );
+
+        taskPage.inquiry()
             .then((result) => jsmake.exec(result.argv))
             .catch((err) => {
                 maester.error(err);

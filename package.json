@@ -10,7 +10,7 @@
     "rake",
     "jake"
   ],
-  "version": "0.2.19",
+  "version": "0.2.20",
   "homepage": "",
   "author": "Eser Ozvataf <eser@ozvataf.com>",
   "contributors": [
@@ -48,7 +48,7 @@
   "dependencies": {
     "cofounder": "^0.0.15",
     "colors": "^1.1.2",
-    "consultant": "^0.1.12",
+    "consultant": "^0.1.14",
     "es6-eventemitter": "0.0.3",
     "maester": "^0.0.18",
     "semver": "^5.3.0",
