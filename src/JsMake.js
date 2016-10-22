@@ -1,5 +1,6 @@
 import EventEmitter from 'es6-eventemitter';
 import maester from 'maester';
+import Senior from 'senior';
 import { Task } from './Task.js';
 import { RunContext } from './RunContext.js';
 import { Utils } from './Utils.js';
@@ -12,6 +13,7 @@ export class JsMake {
     constructor() {
         this.events = new EventEmitter();
         this.logger = maester;
+        this.plugins = new Senior('jsmake');
         this.utils = new Utils();
 
         this.errors = {
