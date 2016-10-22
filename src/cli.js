@@ -140,7 +140,6 @@ else {
                     type: String,
                     label: 'Task',
                     description: 'The task to be executed',
-                    
                     values: Object.keys(jsmake.tasks).map(
                         (taskKey) => {
                             const task = jsmake.tasks[taskKey];
@@ -152,6 +151,11 @@ else {
                             };
                         }
                     ),
+                    cancelValue: {
+                        name: 'Quit',
+                        value: null,
+                        'short': 'Quit'
+                    },
                     min: 0,
                     max: undefined
                 }
@@ -159,7 +163,13 @@ else {
         );
 
         taskPage.inquiry()
-            .then((result) => jsmake.exec(result.argv))
+            .then((result) => {
+                if (result instanceof Object) {
+                    return jsmake.exec(result.argv);
+                }
+
+                return null;
+            })
             .catch((err) => {
                 maester.error(err);
             });
