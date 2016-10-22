@@ -1,38 +1,20 @@
 import fs from 'fs';
-import os from 'os';
-import childProcess from 'child_process';
 import cofounder from 'cofounder';
 import semver from 'semver';
 
 export class Utils {
     constructor() {
-        this.scanDir = cofounder.scanDir;
-        this.glob = cofounder.glob;
-        this.rm = cofounder.rm;
-        this.rmdir = cofounder.rmdir;
-        this.mkdir = cofounder.mkdir;
-        this.cp = cofounder.cp;
-        // TODO
-        // this.mv = cofounder.mv;
-    }
-
-    shell(command, args = [], env = {}) {
-        const env_ = Object.assign({}, process.env, env);
-
-        const proc = childProcess.spawnSync(
-            command,
-            args,
-            {
-                stdio: 'inherit',
-                shell: true,
-                env: env_,
-                encoding: 'utf8'
-            }
-        );
-
-        process.on('SIGTERM', () => proc.kill('SIGTERM'));
-
-        return proc;
+        // fs
+        this.scanDir = cofounder.fs.scanDir;
+        this.glob = cofounder.fs.glob;
+        this.cp = cofounder.fs.cp;
+        this.mv = cofounder.fs.mv;
+        this.rm = cofounder.fs.rm;
+        this.rmdir = cofounder.fs.rmdir;
+        this.mkdir = cofounder.fs.mkdir;
+        this.writeFile = cofounder.fs.writeFile;
+        // os
+        this.shell = cofounder.os.shell;
     }
 
     packageJsonLoad(filepath) {
