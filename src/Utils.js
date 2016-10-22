@@ -2,43 +2,17 @@ import fs from 'fs';
 import cofounder from 'cofounder';
 import semver from 'semver';
 
-export class Utils {
-    constructor() {
-        // fs
-        this.scanDir = cofounder.fs.scanDir;
-        this.glob = cofounder.fs.glob;
-        this.cp = cofounder.fs.cp;
-        this.mv = cofounder.fs.mv;
-        this.rm = cofounder.fs.rm;
-        this.rmdir = cofounder.fs.rmdir;
-        this.mkdir = cofounder.fs.mkdir;
-        this.writeFile = cofounder.fs.writeFile;
-        // os
-        this.shell = cofounder.os.shell;
+export class Utils extends cofounder.constructor {
+    constructor(...args) {
+        super(...args);
     }
 
-    packageJsonLoad(filepath) {
-        const packageFile = fs.readFileSync(filepath, { encoding: 'utf8' });
-
-        const packageContent = JSON.parse(packageFile);
-
-        return packageContent;
-    }
-
-    packageJsonSave(filepath, content) {
-        fs.writeFileSync(
-            filepath,
-            JSON.stringify(content, null, '  '),
-            { encoding: 'utf8' }
-        );
-    }
-
-    packageJsonVersionBump(filepath, type = 'patch') {
-        const packageContent = this.packageJsonLoad(filepath);
+    async packageJsonVersionBump(filepath, type = 'patch') {
+        const packageContent = await this.json.loadFile(filepath);
 
         packageContent.version = semver.inc(packageContent.version, type);
 
-        this.packageJsonSave(filepath, packageContent);
+        await this.json.saveFile(filepath, packageContent);
 
         return packageContent.version;
     }
