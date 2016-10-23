@@ -61,10 +61,12 @@ export class RunContext {
             }
         }
 
+        const command = parameters.join(' ');
+
         throw new TaskException({
-            message: `unknown task name - ${parameters[0]}`,
-            error: this.owner.errors.unknownTask,
-            taskname: parameters[0]
+            message: `unknown task - ${command}`,
+            error: this.owner.errors.unknownCommand,
+            command: command
         });
     }
 

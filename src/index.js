@@ -22,18 +22,22 @@ jsmake.task('menu', function (argv) {
 jsmake.tasks.menu.menuHidden = true;
 
 jsmake.desc('Adds a plugin');
-jsmake.task('plugins add', function (argv) {
+jsmake.task('plugins add', async function (argv) {
     const pluginName = argv._[0];
 
-    jsmake.plugins.install(pluginName);
+    if (await jsmake.plugins.install(pluginName)) {
+        console.log(`plugin successfully added - ${pluginName}`);
+    }
 });
 jsmake.tasks['plugins add'].menuHidden = true;
 
 jsmake.desc('Removes a plugin');
-jsmake.task('plugins remove', function (argv) {
+jsmake.task('plugins remove', async function (argv) {
     const pluginName = argv._[0];
 
-    jsmake.plugins.uninstall(pluginName);
+    if (await jsmake.plugins.uninstall(pluginName)) {
+        console.log(`plugin successfully removed - ${pluginName}`);
+    }
 });
 jsmake.tasks['plugins remove'].menuHidden = true;
 
