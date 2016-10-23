@@ -18,7 +18,7 @@ export class JsMake {
         this.utils = new Utils();
 
         this.errors = {
-            unknownTask: Symbol('unknown task'),
+            unknownCommand: Symbol('unknown command'),
             exception: Symbol('exception thrown')
         };
 
