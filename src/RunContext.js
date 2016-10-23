@@ -33,25 +33,39 @@ export class RunContext {
         }
     }
 
+    checkArrayIncludes(array1, array2) {
+        if (array1.length < array2.length) {
+            return false;
+        }
+
+        for (let i = 0; i < array2.length; i++) {
+            if (array1[i] !== array2[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     validateArgvAndGetTask() {
-        let taskname;
+        const parameters = (this.argv._.length > 0) ? this.argv._ : [ 'default' ];
 
-        if (this.argv._.length === 0) {
-            taskname = 'default';
-        }
-        else {
-            taskname = this.argv._.shift();
-        }
+        for (const taskKey of Object.keys(this.owner.tasks)) {
+            const task = this.owner.tasks[taskKey],
+                tasknameParts = task.name.split(' ');
 
-        if (!(taskname in this.owner.tasks)) {
-            throw new TaskException({
-                message: `unknown task name - ${taskname}`,
-                error: this.owner.errors.unknownTask,
-                taskname: taskname
-            });
+            if (this.checkArrayIncludes(parameters, tasknameParts)) {
+                parameters.splice(0, tasknameParts.length);
+
+                return this.owner.tasks[taskKey];
+            }
         }
 
-        return this.owner.tasks[taskname];
+        throw new TaskException({
+            message: `unknown task name - ${parameters[0]}`,
+            error: this.owner.errors.unknownTask,
+            taskname: parameters[0]
+        });
     }
 
     async runExecutionQueue() {
