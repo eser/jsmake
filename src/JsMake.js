@@ -1,5 +1,6 @@
 import EventEmitter from 'es6-eventemitter';
 import maester from 'maester';
+import consultant from 'consultant';
 import Senior from 'senior';
 import { Task } from './Task.js';
 import { RunContext } from './RunContext.js';
@@ -92,13 +93,62 @@ export class JsMake {
         output.push(alignedString([ indent, 'Tasks                            Description                        ' ]));
         output.push(alignedString([ indent, '-------------------------------  -----------------------------------' ]));
 
-        this.tasks.forEach((task) => {
+        for (const taskKey of Object.keys(this.tasks)) {
+            const task = this.tasks[taskKey];
+
             output.push(
                 alignedString([ indent, task.name, 35, task.description ])
             );
 
             task.parameters.help(output, [ indent + 4, 35 ]);
-        });
+        }
+    }
+
+    async menu() {
+        const menuItems = [];
+
+        for (const taskKey of Object.keys(this.tasks)) {
+            const task = this.tasks[taskKey];
+
+            if (task.menuHidden) {
+                continue;
+            }
+
+            menuItems.push({
+                name: alignedString([ 0, task.name, 35, task.description ]),
+                value: task.name,
+                'short': task.name
+            });
+        }
+
+        const taskPage = consultant.createPage(
+            'Task Menu',
+            {
+                _: {
+                    type: String,
+                    label: 'Task',
+                    description: 'The task to be executed',
+                    values: menuItems,
+                    cancelValue: {
+                        name: 'Quit',
+                        value: null,
+                        'short': 'Quit'
+                    },
+                    min: 0,
+                    max: undefined
+                }
+            }
+        );
+
+        const result = await taskPage.inquiry();
+
+        if (result instanceof Object) {
+            await this.exec(result.argv);
+
+            return true;
+        }
+
+        return false;
     }
 }
 

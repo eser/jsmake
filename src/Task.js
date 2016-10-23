@@ -39,6 +39,8 @@ export class Task {
         else {
             this.action = action;
         }
+
+        this.menuHidden = false;
     }
 
     setDescription(description) {
@@ -55,6 +57,10 @@ export class Task {
 
     setAction(action) {
         this.action = action;
+    }
+
+    setMenuHidden(visibility) {
+        this.menuHidden = visibility;
     }
 
     async execute(argv) {

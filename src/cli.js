@@ -4,7 +4,6 @@ import updateNotifier from 'update-notifier';
 import maester from 'maester';
 import consultant from 'consultant';
 import jsmake from './';
-import { alignedString } from './utils/alignedString.js';
 import pkg from '../package.json';
 
 let exitCode = 0;
@@ -33,25 +32,6 @@ const argvPage = consultant.createPage(
             helpHidden: true,
             min: 0,
             max: undefined
-        },
-        tasks: {
-            type: Boolean,
-            aliases: [ 't' ],
-            label: 'Tasks',
-            description: 'Lists defined tasks',
-            'default': false,
-            uiHidden: true,
-            min: 0,
-            max: 1
-        },
-        taskmenu: {
-            type: Boolean,
-            label: 'Task Menu',
-            description: 'Displays the task menu',
-            'default': false,
-            uiHidden: true,
-            min: 0,
-            max: 1
         },
         verbosity: {
             type: String,
@@ -113,12 +93,7 @@ else {
         jsmake.loadFile(makefilePath);
     }
 
-    if (argValidated.argv.tasks) {
-        for (const task of jsmake.getTaskNames()) {
-            console.log(task);
-        }
-    }
-    else if (argValidated.argv.help) {
+    if (argValidated.argv.help) {
         const output = [
             'Usage: jsmake [command] [parameters]',
             ''
@@ -129,50 +104,8 @@ else {
 
         console.log(output.join('\n'));
     }
-    else if (
-        argValidated.argv.taskmenu ||
-        (argValidated.argv._.length === 0 && jsmake.tasks.default === undefined)
-        ) {
-        const taskPage = consultant.createPage(
-            'Task Menu',
-            {
-                _: {
-                    type: String,
-                    label: 'Task',
-                    description: 'The task to be executed',
-                    values: Object.keys(jsmake.tasks).map(
-                        (taskKey) => {
-                            const task = jsmake.tasks[taskKey];
-
-                            return {
-                                name: alignedString([ 0, task.name, 35, task.description ]),
-                                value: task.name,
-                                'short': task.name
-                            };
-                        }
-                    ),
-                    cancelValue: {
-                        name: 'Quit',
-                        value: null,
-                        'short': 'Quit'
-                    },
-                    min: 0,
-                    max: undefined
-                }
-            }
-        );
-
-        taskPage.inquiry()
-            .then((result) => {
-                if (result instanceof Object) {
-                    return jsmake.exec(result.argv);
-                }
-
-                return null;
-            })
-            .catch((err) => {
-                maester.error(err);
-            });
+    else if (argValidated.argv._.length === 0 && jsmake.tasks.default === undefined) {
+        jsmake.menu();
     }
     else {
         jsmake.exec(argv)
