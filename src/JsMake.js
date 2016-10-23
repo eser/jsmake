@@ -24,6 +24,14 @@ export class JsMake {
 
         this.tasks = {};
         this.description = emptyDescription;
+
+        this.initHandle = undefined;
+    }
+
+    init() {
+        this.initHandle = this.plugins.loadAll();
+
+        return this.initHandle;
     }
 
     loadFile(filepath) {

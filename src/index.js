@@ -41,4 +41,6 @@ jsmake.task('plugins remove', async function (argv) {
 });
 jsmake.tasks['plugins remove'].menuHidden = true;
 
+jsmake.init();
+
 module.exports = jsmake;
