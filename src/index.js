@@ -2,10 +2,6 @@ import { JsMake } from './JsMake.js';
 
 const jsmake = new JsMake();
 
-if (global.jsmake === undefined) {
-    global.jsmake = jsmake;
-}
-
 // TODO load plugins, etc.
 jsmake.desc('Lists defined tasks');
 jsmake.task('tasks', function (argv) {
@@ -41,6 +37,6 @@ jsmake.task('plugins remove', async function (argv) {
 });
 jsmake.tasks['plugins remove'].menuHidden = true;
 
-jsmake.init();
+jsmake.loadPlugins();
 
 module.exports = jsmake;

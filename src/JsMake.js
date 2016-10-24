@@ -24,19 +24,35 @@ export class JsMake {
 
         this.tasks = {};
         this.description = emptyDescription;
-
-        this.initHandle = undefined;
     }
 
-    init() {
-        this.initHandle = this.plugins.loadAll();
+    loadPlugins() {
+        maester.debug('loading plugins...');
 
-        return this.initHandle;
+        const plugins = this.plugins.loadAll({ jsmake: this });
     }
 
     loadFile(filepath) {
         maester.debug(`loading makefile '${filepath}'...`);
-        require(filepath);
+
+        const jsmakeBackup = global.jsmake;
+
+        global.jsmake = this;
+
+        try {
+            const loadedModule = require(filepath);
+
+            return loadedModule;
+        }
+        catch (ex) {
+            if (ex.code !== 'MODULE_NOT_FOUND') {
+                throw ex;
+            }
+        }
+
+        global.jsmake = jsmakeBackup;
+
+        return null;
     }
 
     createTask(...args) {
