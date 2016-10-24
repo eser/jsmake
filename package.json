@@ -10,7 +10,7 @@
     "rake",
     "jake"
   ],
-  "version": "0.2.24",
+  "version": "0.2.25",
   "homepage": "",
   "author": "Eser Ozvataf <eser@ozvataf.com>",
   "contributors": [
@@ -52,7 +52,7 @@
     "es6-eventemitter": "0.0.3",
     "maester": "^0.0.18",
     "semver": "^5.3.0",
-    "senior": "0.0.6",
+    "senior": "0.0.9",
     "update-notifier": "^1.0.2"
   },
   "devDependencies": {}
