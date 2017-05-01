@@ -1,3 +1,4 @@
+// TODO check
 jsmake.task('task1', function (argv) {
     console.log('task1');
 });

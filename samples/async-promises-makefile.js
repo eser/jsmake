@@ -1,3 +1,4 @@
+// TODO check
 jsmake.task('default', function (argv) {
     return new Promise(function (resolve, reject) {
         setTimeout(

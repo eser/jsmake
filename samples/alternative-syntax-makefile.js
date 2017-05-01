@@ -1,3 +1,4 @@
+// TODO check
 var task = jsmake.createTask('default');
 
 task.setDescription('Says hello.');

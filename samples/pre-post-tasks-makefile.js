@@ -1,3 +1,4 @@
+// TODO check
 jsmake.task('pre-default', function (argv) {
     console.log('pre-default task, runs before default task.');
 });

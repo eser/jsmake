@@ -1,3 +1,4 @@
+// TODO check
 jsmake.desc('Says hi to someone.');
 jsmake.task('hello', function (argv) {
     console.log('hi ' + argv.name);

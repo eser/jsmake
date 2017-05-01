@@ -1,3 +1,4 @@
+// TODO check
 jsmake.task('bump', function (argv) {
     var version = jsmake.utils.packageJsonVersionBump('./package.json', 'patch');
 

@@ -46,14 +46,16 @@
     "jsmake": "./bin/jsmake"
   },
   "dependencies": {
-    "cofounder": "^0.0.18",
+    "cofounder": "^0.0.22",
     "colors": "^1.1.2",
-    "consultant": "^0.1.19",
-    "es6-eventemitter": "0.0.12",
-    "maester": "^0.0.22",
+    "consultant": "^0.1.27",
+    "es6-eventemitter": "0.0.15",
+    "maester": "^0.0.26",
     "semver": "^5.3.0",
-    "senior": "0.0.11",
-    "update-notifier": "^1.0.3"
+    "senior": "0.0.13",
+    "update-notifier": "^2.1.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/es6-shim": "^0.31.33"
+  }
 }

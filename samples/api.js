@@ -1,3 +1,4 @@
+// TODO check
 var jsmake = require('../lib/');
 
 jsmake.task('sayHello', function (argv) {

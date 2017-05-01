@@ -1,4 +1,4 @@
-import { JsMake } from './JsMake.js';
+import { JsMake } from './JsMake';
 
 const jsmake = new JsMake();
 
@@ -25,7 +25,7 @@ jsmake.task('plugins add', async function (argv) {
         console.log(`plugin successfully added - ${pluginName}`);
     }
 });
-jsmake.tasks['plugins add'].menuHidden = true;
+jsmake.tasks.plugins.add.menuHidden = true;
 
 jsmake.desc('Removes a plugin');
 jsmake.task('plugins remove', async function (argv) {
@@ -35,8 +35,19 @@ jsmake.task('plugins remove', async function (argv) {
         console.log(`plugin successfully removed - ${pluginName}`);
     }
 });
-jsmake.tasks['plugins remove'].menuHidden = true;
+jsmake.tasks.plugins.remove.menuHidden = true;
+
+jsmake.desc('Test command');
+jsmake.task('test', async function (argv) {
+    const pluginName = argv._[0];
+
+    console.log(`test - ${pluginName}`);
+});
+jsmake.tasks.test.menuHidden = true;
 
 jsmake.loadPlugins();
+
+// console.log(JSON.stringify(jsmake.tasks, undefined, 4));
+// process.exit(0);
 
 module.exports = jsmake;

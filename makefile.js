@@ -6,7 +6,7 @@ jsmake.task('bump', function (argv) {
         });
 });
 
-jsmake.tasks.bump.parameters.setRule(
+jsmake.tasks.bump.setParameter(
     'type',
     {
         type: String,
@@ -29,5 +29,10 @@ jsmake.task('deps', function (argv) {
 
 jsmake.desc('Builds the source code.');
 jsmake.task('build', function (argv) {
-    jsmake.utils.os.shell('sey rebuild');
+    jsmake.utils.os.shell('tsc');
+});
+
+jsmake.desc('Test.');
+jsmake.task('test', function (argv) {
+    console.log('test');
 });
