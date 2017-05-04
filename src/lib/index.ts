@@ -50,4 +50,4 @@ jsmake.loadPlugins();
 // console.log(JSON.stringify(jsmake.tasks, undefined, 4));
 // process.exit(0);
 
-module.exports = jsmake;
+export = jsmake;
