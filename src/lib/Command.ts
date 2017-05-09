@@ -1,5 +1,5 @@
-import * as EventEmitter from 'es6-eventemitter';
-import * as consultant from 'consultant';
+import EventEmitter = require('es6-eventemitter');
+import consultant = require('consultant');
 import { TaskException } from './TaskException';
 
 export async function notAssigned(argv: any, argValidated: any): Promise<any> {

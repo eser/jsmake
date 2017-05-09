@@ -1,5 +1,5 @@
-import * as EventEmitter from 'es6-eventemitter';
-import * as Senior from 'senior';
+import EventEmitter = require('es6-eventemitter');
+import Senior = require('senior');
 import { Command } from './Command';
 import { CommandSet } from './CommandSet';
 import { Utils } from './Utils';

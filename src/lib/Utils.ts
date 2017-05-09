@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as cofounder from 'cofounder';
-import * as semver from 'semver';
+import fs = require('fs');
+import cofounder = require('cofounder');
+import semver = require('semver');
 
 export class Utils extends cofounder.constructor {
     constructor(...args) {

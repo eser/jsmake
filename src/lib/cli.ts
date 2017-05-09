@@ -1,8 +1,8 @@
 /*global process, console  */
-import * as path from 'path';
-import * as updateNotifier from 'update-notifier';
-import * as maester from 'maester';
-import * as consultant from 'consultant';
+import path = require('path');
+import updateNotifier = require('update-notifier');
+import maester = require('maester');
+import consultant = require('consultant');
 import * as jsmake from './';
 import * as pkg from '../package.json';
 

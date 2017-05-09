@@ -1,4 +1,4 @@
-import * as maester from 'maester';
+import maester = require('maester');
 
 export class TaskException extends maester.exception {
     constructor(input, exception = null) {

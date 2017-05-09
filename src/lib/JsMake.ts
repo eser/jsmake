@@ -1,12 +1,12 @@
-import * as EventEmitter from 'es6-eventemitter';
-import * as maester from 'maester';
-import * as consultant from 'consultant';
-import * as Senior from 'senior';
+import EventEmitter = require('es6-eventemitter');
+import maester = require('maester');
+import consultant = require('consultant');
+import Senior = require('senior');
 import { Command } from './Command';
 import { CommandSet } from './CommandSet';
 import { Utils } from './Utils';
 import { alignedString } from './utils/alignedString';
-import * as pkg from '../package.json';
+import pkg = require('../package.json');
 
 const emptyDescription = '';
 

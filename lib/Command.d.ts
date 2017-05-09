@@ -1,4 +1,4 @@
-import * as EventEmitter from 'es6-eventemitter';
+import EventEmitter = require('es6-eventemitter');
 export declare function notAssigned(argv: any, argValidated: any): Promise<any>;
 export declare type CommandActionType = (argv: any, argValidated: any) => any | Promise<any>;
 export declare type CommandStateType = {
