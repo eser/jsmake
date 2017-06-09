@@ -1,15 +1,5 @@
-# Terraform
-.deploy/
-
-# Visual Studio Code
-.vscode/
-
 # npm
 node_modules/
-
-# sey
-.sey/
-seyfile.js
 
 # OS X
 .DS_Store
@@ -17,17 +7,8 @@ seyfile.js
 # Git
 .git*
 
-# Travis CI
-.travis.yml
+# TypeScript
+tsconfig.json
 
-# Istanbul
-.istanbul.yml
-
-# apidoc
-apidoc.json
-
-# PM2
-processes.json
-
-# JSConfig
-jsconfig.json
+# jsmake
+makefile.js
