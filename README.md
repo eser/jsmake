@@ -97,6 +97,11 @@ Parameters:
 ```
 
 
+## Dependencies
+
+Dependencies are automatically handled by `npm`, however you might want to take a look at [jsmake-libraries](https://github.com/eserozvataf/jsmake-libraries) repository that consists of open-source libraries/modules which empower jsmake.
+
+
 ## Todo List
 
 See [GitHub Projects](https://github.com/eserozvataf/jsmake/projects) for more.

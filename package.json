@@ -47,6 +47,7 @@
     "jsmake": "./bin/jsmake"
   },
   "dependencies": {
+    "@types/es6-shim": "^0.31.34",
     "cofounder": "^0.6.0",
     "colors": "^1.1.2",
     "consultant": "^0.6.0",
@@ -57,6 +58,6 @@
     "update-notifier": "^2.2.0"
   },
   "devDependencies": {
-    "@types/es6-shim": "^0.31.34"
+    "@types/node": "^7.0.29"
   }
 }

@@ -1,28 +1,25 @@
 import EventEmitter = require('es6-eventemitter');
 import maester = require('maester');
-import consultant = require('consultant');
 import Senior = require('senior');
-import { Command } from './Command';
-import { CommandSet } from './CommandSet';
+import { Command, CommandSet } from './CommandSet';
 import { Utils } from './Utils';
-import { alignedString } from './utils/alignedString';
 import pkg = require('../package.json');
 
 const emptyDescription = '';
 
-export class JsMake {
+export class JsMake extends CommandSet {
     events: EventEmitter;
     logger: any;
-    tasks: CommandSet;
     plugins: Senior;
     utils: Utils;
     errors: { [key: string]: any };
-    description: string;
+    lastDescription: string;
 
     constructor() {
+        super();
+
         this.events = new EventEmitter();
         this.logger = maester;
-        this.tasks = new CommandSet();
         this.plugins = new Senior('jsmake');
         this.utils = new Utils();
 
@@ -31,16 +28,16 @@ export class JsMake {
             exception: Symbol('exception thrown')
         };
 
-        this.description = emptyDescription;
+        this.lastDescription = emptyDescription;
     }
 
-    loadPlugins() {
+    loadPlugins(): void {
         maester.debug('loading plugins...');
 
-        const plugins = this.plugins.loadAll({ jsmake: this });
+        this.plugins.loadAll({ jsmake: this }); // FIXME capture result?
     }
 
-    loadFile(filepath) {
+    loadFile(filepath: string): Command | null {
         maester.debug(`loading makefile '${filepath}'...`);
 
         const jsmakeBackup = global.jsmake;
@@ -63,11 +60,11 @@ export class JsMake {
         return null;
     }
 
-    desc(description) {
-        this.description = description;
+    desc(description: string): void {
+        this.lastDescription = description;
     }
 
-    task(name, ...params) {
+    task(pathstr: string, ...params: any[]): void {
         let paramCount = params.length;
         const lastParam = params[paramCount - 1];
 
@@ -81,13 +78,14 @@ export class JsMake {
             options = {};
         }
 
-        if (this.description !== emptyDescription) {
-            options.description = this.description;
+        if (this.lastDescription !== emptyDescription) {
+            options.description = this.lastDescription;
         }
-        this.description = emptyDescription;
+        this.lastDescription = emptyDescription;
 
         // params[0] as action
         if (paramCount === 1) {
+            options.prerequisites = [];
             options.action = params[0];
         }
         // params[0] as prerequisites, params[1] as action
@@ -96,79 +94,11 @@ export class JsMake {
             options.action = params[1];
         }
 
-        const command = this.tasks.createCommand(name, options);
-
-        return command;
+        this.addCommand(pathstr, options);
     }
 
-    // getTaskNames() {
-    //     return Object.keys(this.tasks).map(
-    //         (taskKey) => this.tasks[taskKey].name
-    //     );
-    // }
-
-    getVersion() {
+    getVersion(): string | undefined {
         return pkg.version;
-    }
-
-    help(output, indent = 0) {
-        output.push(alignedString([ indent, 'Tasks                            Description                        ' ]));
-        output.push(alignedString([ indent, '-------------------------------  -----------------------------------' ]));
-
-        // for (const taskKey of Object.keys(this.tasks)) {
-        //     const task = this.tasks[taskKey];
-
-        //     output.push(
-        //         alignedString([ indent, task.name, 35, task.description ])
-        //     );
-
-        //     // TODO
-        //     task.parameters.help(output, [ indent + 4, 35 ]);
-        // }
-    }
-
-    async menu() {
-        const menuItems = [];
-
-        // for (const taskKey of Object.keys(this.tasks)) {
-        //     const task = this.tasks[taskKey];
-
-        //     if (task.menuHidden) {
-        //         continue;
-        //     }
-
-        //     menuItems.push({
-        //         name: alignedString([ 0, task.name, 35, task.description ]),
-        //         value: task.name,
-        //         'short': task.name
-        //     });
-        // }
-
-        const taskRules = {
-            _: {
-                type: String,
-                label: 'Task',
-                description: 'The task to be executed',
-                values: menuItems,
-                cancelValue: {
-                    name: 'Quit',
-                    value: null,
-                    'short': 'Quit'
-                },
-                min: 0,
-                max: undefined
-            }
-        };
-
-        const result = await consultant.input.fromInquiry(taskRules);
-
-        if (result instanceof Object) {
-            await this.tasks.exec(result.argv);
-
-            return true;
-        }
-
-        return false;
     }
 }
 

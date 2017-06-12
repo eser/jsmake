@@ -7,7 +7,7 @@ export class Utils extends cofounder.constructor {
         super(...args);
     }
 
-    async packageJsonVersionBump(filepath, type = 'patch') {
+    async packageJsonVersionBump(filepath, type = 'patch'): Promise<string> {
         const packageContent = await this.json.loadFile(filepath);
 
         packageContent.version = semver.inc(packageContent.version, type);
@@ -17,7 +17,7 @@ export class Utils extends cofounder.constructor {
         return packageContent.version;
     }
 
-    npmPublish() {
+    npmPublish(): void {
         /*
         npm.load(
             { loaded: false },

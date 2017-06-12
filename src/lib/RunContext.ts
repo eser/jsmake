@@ -1,62 +1,115 @@
-import { Command, CommandStateType } from './Command';
-import { CommandSet } from './CommandSet';
+import consultant = require('consultant');
+import { Command, CommandSet, CommandLocation } from './CommandSet';
 import { TaskException } from './TaskException';
 
+export type CommandStateType = { command: Command, argv: any };
+
 export class RunContext {
-    executionQueue: Array<{ command: Command, state: CommandStateType }>;
+    executionQueue: Array<CommandStateType>;
+    consultantInstance: consultant;
 
-    constructor() {
+    constructor(consultantInstance: consultant) {
         this.executionQueue = [];
+        this.consultantInstance = consultantInstance;
     }
 
-    enqueueCommand(commandSetRoot: CommandSet, args: string, state: CommandStateType) {
-        const target = commandSetRoot.locateCommandSet(args);
+    async enqueueCommand(commandSet: CommandSet, args: string | object): Promise<void> {
+        let argv;
 
-        this.enqueueCommandDirect(target.parent, target.name, state);
-    }
-
-    enqueueCommandDirect(commandSet: CommandSet, commandName: string, state: CommandStateType) {
-        const command: Command = commandSet[commandName];
-
-        if (!(command instanceof Command)) {
-            throw new TaskException(`${commandName} is not a valid command`);
+        if (args.constructor === Object) {
+            argv = await this.consultantInstance.fromObject(<object>args);
+        }
+        else {
+            argv = await this.consultantInstance.fromString(<string>args);
         }
 
-        if (this.executionQueue.filter(item => item.command.name == command.name).length > 0) {
+        if (argv.commandId === undefined) {
+            throw new Error('enqueueCommand: argv.commandId is undefined');
+        }
+
+        const commandLocation = commandSet.locatePath(argv.commandId);
+
+        if (commandLocation === null) {
+            throw new Error('enqueueCommand: commandLocation is null');
+        }
+
+        this.enqueueCommandDirect(
+            commandSet,
+            commandLocation,
+            {
+                command: commandLocation.instance,
+                argv: argv
+            }
+        );
+    }
+
+    enqueueCommandDirect(commandSet: CommandSet, commandLocation: CommandLocation, state: CommandStateType): void {
+        if (this.executionQueue.some(item => item.command === commandLocation.instance)) {
             return;
         }
 
+        const command = commandLocation.instance;
+
         if (command.prerequisites !== undefined) {
             for (const prerequisite of command.prerequisites) {
-                this.enqueueCommandDirect(commandSet, prerequisite, state);
+                const prerequisiteLocation = commandSet.locatePath(prerequisite);
+
+                if (prerequisiteLocation === null) {
+                    throw new Error(`prerequisite ${prerequisite} is not found for task ${command.name}`);
+                }
+
+                this.enqueueCommandDirect(commandSet, prerequisiteLocation, state);
             }
         }
 
-        const preTaskName = `pre-${command.name}`,
-            postTaskName = `post-${command.name}`;
+        // const preTaskName = `pre-${command.name}`,
+        //     postTaskName = `post-${command.name}`;
 
-        if (preTaskName in commandSet) {
-            this.enqueueCommandDirect(commandSet, preTaskName, state);
-        }
+        // if (preTaskName in commandSet) {
+        //     this.enqueueCommandDirect(commandSet, preTaskName, state);
+        // }
 
-        this.executionQueue.push({ command: command, state: state });
+        this.executionQueue.push(state);
 
-        if (postTaskName in commandSet) {
-            this.enqueueCommandDirect(commandSet, postTaskName, state);
-        }
+        // if (postTaskName in commandSet) {
+        //     this.enqueueCommandDirect(commandSet, postTaskName, state);
+        // }
     }
 
-    async execute() {
-        while (this.executionQueue.length > 0) {
-            const item = this.executionQueue.shift();
+    async executeSingle(state: CommandStateType): Promise<void> {
+        let result;
 
-            // this.logger.debug('running task ${item.command.name}');
+        const command = state.command;
 
-            if (item === undefined) {
-                continue;
+        try {
+            if (command.action !== undefined || command.prerequisites.length === 0) {
+                const ret = command.action(state.argv, process.stdout);
+
+                if (ret instanceof Promise) {
+                    await ret;
+                }
             }
 
-            await item.command.execute(item.state);
+            // command.events.emit('done');
+
+            result = Promise.resolve();
+        }
+        catch (ex) {
+            // command.events.emit('error', ex);
+
+            result = Promise.reject(ex);
+        }
+
+        // command.events.emit('complete');
+
+        return result;
+    }
+
+    async execute(): Promise<void> {
+        while (this.executionQueue.length > 0) {
+            const state = <CommandStateType>this.executionQueue.shift();
+
+            await this.executeSingle(state);
         }
     }
 }
