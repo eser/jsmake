@@ -1,6 +1,7 @@
 import EventEmitter = require('es6-eventemitter');
 import maester = require('maester');
 import Senior = require('senior');
+import { assign } from 'ponyfills';
 import { Command, CommandSet } from './CommandSet';
 import { Utils } from './Utils';
 import pkg = require('../package.json');
@@ -71,7 +72,7 @@ export class JsMake extends CommandSet {
         let options;
 
         if (lastParam.constructor !== Function && lastParam instanceof Object) {
-            options = Object.assign({}, lastParam);
+            options = assign({}, lastParam);
             paramCount--;
         }
         else {

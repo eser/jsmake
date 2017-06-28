@@ -3,6 +3,7 @@ import path = require('path');
 import updateNotifier = require('update-notifier');
 import maester = require('maester');
 import consultant = require('consultant');
+import { assign } from 'ponyfills';
 import * as jsmake from './';
 import * as pkg from '../package.json';
 
@@ -109,7 +110,7 @@ else {
     }
     else {
         // TODO
-        const newArgv = Object.assign(
+        const newArgv = assign(
             { _: argValidated.values._ },
             argValidated.remainder.source
         );

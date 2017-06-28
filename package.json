@@ -10,7 +10,7 @@
     "rake",
     "jake"
   ],
-  "version": "0.6.0",
+  "version": "0.7.0",
   "homepage": "",
   "author": "Eser Ozvataf <eser@ozvataf.com>",
   "contributors": [
@@ -47,17 +47,17 @@
     "jsmake": "./bin/jsmake"
   },
   "dependencies": {
-    "@types/es6-shim": "^0.31.34",
-    "cofounder": "^0.6.0",
+    "cofounder": "^0.7.3",
     "colors": "^1.1.2",
-    "consultant": "^0.6.0",
-    "es6-eventemitter": "^0.6.0",
-    "maester": "^0.6.0",
+    "consultant": "^0.7.3",
+    "es6-eventemitter": "^0.7.3",
+    "maester": "^0.7.3",
     "semver": "^5.3.0",
-    "senior": "^0.6.0",
+    "senior": "^0.7.3",
+    "ponyfills": "^0.7.3",
     "update-notifier": "^2.2.0"
   },
   "devDependencies": {
-    "@types/node": "^7.0.29"
+    "@types/node": "^7.0.31"
   }
 }

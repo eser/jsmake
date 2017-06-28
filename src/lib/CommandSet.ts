@@ -1,5 +1,6 @@
 import consultant = require('consultant');
 import EventEmitter = require('es6-eventemitter');
+import { assign } from 'ponyfills';
 import { RunContext } from './RunContext';
 import { alignedString } from './utils/alignedString';
 
@@ -22,6 +23,12 @@ export type Command = {
     action: CommandActionType;
     rules: any;
 };
+
+export const ProxyHandler = {
+    get(target, name) {
+
+    }
+}
 
 export class CommandSet {
     tasks: object;
@@ -103,7 +110,7 @@ export class CommandSet {
             };
 
             if (!Array.isArray(item.prerequisites)) {
-                itemContent = Object.assign(
+                itemContent = assign(
                     itemContent,
                     this.buildConsultantRules(target[itemKey], newPathStack)
                 );

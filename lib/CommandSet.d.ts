@@ -16,6 +16,9 @@ export declare type Command = {
     action: CommandActionType;
     rules: any;
 };
+export declare const ProxyHandler: {
+    get(target: any, name: any): void;
+};
 export declare class CommandSet {
     tasks: object;
     constructor();
