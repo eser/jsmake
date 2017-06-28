@@ -1,5 +1,5 @@
-import consultant = require('consultant');
-import EventEmitter = require('es6-eventemitter');
+import { Consultant } from 'consultant/lib/esm';
+import { EventEmitter } from 'es6-eventemitter/lib/esm';
 import { RunContext } from './RunContext';
 export declare type CommandActionType = (argv: any, stream: any) => any | Promise<any>;
 export declare type CommandLocation = {
@@ -20,12 +20,17 @@ export declare const ProxyHandler: {
     get(target: any, name: any): void;
 };
 export declare class CommandSet {
-    tasks: object;
+    tasks: {
+        [key: string]: any;
+    };
     constructor();
     locatePath(pathstr: string): CommandLocation | null;
+    locateNode(nodePath: string[]): {
+        parent: any;
+        name: string;
+    };
     addCommand(pathstr: string, command: Command): void;
-    buildConsultantRules(target: object, pathStack: string[]): any;
-    getConsultant(): consultant;
+    getConsultant(): Consultant;
     exec(args: string | object): Promise<RunContext>;
     getTaskTree(): string[];
     help(stream: any, indent?: number): void;

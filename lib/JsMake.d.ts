@@ -1,10 +1,11 @@
-import EventEmitter = require('es6-eventemitter');
-import Senior = require('senior');
+import { EventEmitter } from 'es6-eventemitter/lib/esm';
+import { Maester } from 'maester/lib/esm';
+import { Senior } from 'senior/lib/esm';
 import { Command, CommandSet } from './CommandSet';
 import { Utils } from './Utils';
 export declare class JsMake extends CommandSet {
     events: EventEmitter;
-    logger: any;
+    logger: Maester;
     plugins: Senior;
     utils: Utils;
     errors: {

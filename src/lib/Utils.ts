@@ -1,10 +1,10 @@
 import fs = require('fs');
-import cofounder = require('cofounder');
 import semver = require('semver');
+import { CoFounder } from 'cofounder/lib/esm';
 
-export class Utils extends cofounder.constructor {
-    constructor(...args) {
-        super(...args);
+export class Utils extends CoFounder {
+    constructor() {
+        super();
     }
 
     async packageJsonVersionBump(filepath, type = 'patch'): Promise<string> {
@@ -30,7 +30,7 @@ export class Utils extends cofounder.constructor {
             }
         );
         */
-        this.shell('npm publish');
+        this.os.shell('npm publish');
     }
 }
 

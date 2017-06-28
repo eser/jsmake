@@ -1,6 +1,6 @@
-import maester = require('maester');
+import { BaseException } from 'maester/lib/esm';
 
-export class TaskException extends maester.exception {
+export class TaskException extends BaseException {
     constructor(input, exception = null) {
         super(input, exception);
     }

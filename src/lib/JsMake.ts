@@ -1,7 +1,7 @@
-import EventEmitter = require('es6-eventemitter');
-import maester = require('maester');
-import Senior = require('senior');
-import { assign } from 'ponyfills';
+import { EventEmitter } from 'es6-eventemitter/lib/esm';
+import { Maester } from 'maester/lib/esm';
+import { Senior } from 'senior/lib/esm';
+import { assign } from 'ponyfills/lib/esm';
 import { Command, CommandSet } from './CommandSet';
 import { Utils } from './Utils';
 import pkg = require('../package.json');
@@ -10,7 +10,7 @@ const emptyDescription = '';
 
 export class JsMake extends CommandSet {
     events: EventEmitter;
-    logger: any;
+    logger: Maester;
     plugins: Senior;
     utils: Utils;
     errors: { [key: string]: any };
@@ -20,7 +20,7 @@ export class JsMake extends CommandSet {
         super();
 
         this.events = new EventEmitter();
-        this.logger = maester;
+        this.logger = new Maester();
         this.plugins = new Senior('jsmake');
         this.utils = new Utils();
 
@@ -33,32 +33,17 @@ export class JsMake extends CommandSet {
     }
 
     loadPlugins(): void {
-        maester.debug('loading plugins...');
+        this.logger.debug('loading plugins...');
 
         this.plugins.loadAll({ jsmake: this }); // FIXME capture result?
     }
 
     loadFile(filepath: string): Command | null {
-        maester.debug(`loading makefile '${filepath}'...`);
+        this.logger.debug(`loading makefile '${filepath}'...`);
 
-        const jsmakeBackup = global.jsmake;
+        const loadedModule = this.plugins.loadFile(filepath, { jsmake: this });
 
-        global.jsmake = this;
-
-        try {
-            const loadedModule = require(filepath);
-
-            return loadedModule;
-        }
-        catch (ex) {
-            if (ex.code !== 'MODULE_NOT_FOUND') {
-                throw ex;
-            }
-        }
-
-        global.jsmake = jsmakeBackup;
-
-        return null;
+        return loadedModule;
     }
 
     desc(description: string): void {

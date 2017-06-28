@@ -53,11 +53,11 @@ jsmake.task('tests first', async (argv, stream) => {
 });
 // jsmake.tasks.test.menuHidden = true;
 
-// console.log(JSON.stringify(jsmake.tasks, null, 2));
+console.log(JSON.stringify(jsmake.tasks, null, 2));
 // console.log(jsmake.locatePath('plugins add'));
 // console.log(jsmake.tasks.plugins.add);
 // console.log(JSON.stringify(jsmake.buildConsultantRules(jsmake.tasks, []), null, 2));
-jsmake.exec('tests first hede');
+// jsmake.exec('tests first hede');
 // process.exit(0);
 
 // jsmake.loadPlugins();

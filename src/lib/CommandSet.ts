@@ -1,6 +1,6 @@
-import consultant = require('consultant');
-import EventEmitter = require('es6-eventemitter');
-import { assign } from 'ponyfills';
+import { Consultant } from 'consultant/lib/esm';
+import { EventEmitter } from 'es6-eventemitter/lib/esm';
+import { assign } from 'ponyfills/lib/esm';
 import { RunContext } from './RunContext';
 import { alignedString } from './utils/alignedString';
 
@@ -31,16 +31,21 @@ export const ProxyHandler = {
 }
 
 export class CommandSet {
-    tasks: object;
+    tasks: { [key: string]: any };
 
     constructor() {
-        this.tasks = {};
+        this.tasks = {
+            label: 'jsmake',
+            strict: true,
+
+            children: {}
+        };
     }
 
     locatePath(pathstr: string): CommandLocation | null {
         const split = pathstr.split(' ');
 
-        let pointer: object = this.tasks;
+        let pointer = this.tasks;
 
         while (split.length > 1) {
             // since we checked split.length, it's 100% a string
@@ -66,16 +71,10 @@ export class CommandSet {
         };
     }
 
-    addCommand(pathstr: string, command: Command): void {
-        const split = pathstr.split(' ');
+    locateNode(nodePath: string[]) {
+        const split = nodePath.splice(0);
 
-        for (const reservedWord of reservedWords) {
-            if (split.indexOf(reservedWord) !== -1) {
-                throw new Error(`${reservedWord} is a reserved word and should\'t be a name for a command`);
-            }
-        }
-
-        let pointer: object = this.tasks;
+        let pointer = this.tasks.children;
 
         while (split.length > 1) {
             const name = <string>split.shift();
@@ -85,46 +84,49 @@ export class CommandSet {
             }
 
             pointer = pointer[name];
+
+            if (split.length > 0) {
+                if (!('children' in pointer)) {
+                    pointer.children = {};
+                }
+
+                pointer = pointer.children;
+            }
         }
 
-        pointer[split[0]] = command;
+        return {
+            parent: pointer,
+            name: split[0]
+        };
     }
 
-    buildConsultantRules(target: object, pathStack: string[]): any {
-        const result: any = {};
+    addCommand(pathstr: string, command: Command): void {
+        const split = pathstr.split(' ');
 
-        for (const itemKey in target) {
-            const item = target[itemKey];
-
-            if (result.children === undefined) {
-                result.children = {};
+        for (const reservedWord of reservedWords) {
+            if (split.indexOf(reservedWord) !== -1) {
+                throw new Error(`${reservedWord} is a reserved word and should\'t be a name for a command`);
             }
-
-            const newPathStack = [ ...pathStack, itemKey ];
-
-            let itemContent = {
-                type: consultant.types.command,
-                id: newPathStack.join(' '),
-                label: item.name,
-                description: item.description
-            };
-
-            if (!Array.isArray(item.prerequisites)) {
-                itemContent = assign(
-                    itemContent,
-                    this.buildConsultantRules(target[itemKey], newPathStack)
-                );
-            }
-
-            result.children[itemKey] = itemContent;
         }
 
-        return result;
+        const targetNode = this.locateNode(split);
+        targetNode.parent[targetNode.name] = assign(
+            {},
+            targetNode.parent[targetNode.name],
+            {
+                type: Consultant.types.command,
+                id: pathstr,
+                label: command.name,
+                description: command.description,
+                uiHidden: false,
+                helpDetails: true,
+                strict: true
+            }
+        );
     }
 
-    getConsultant(): consultant {
-        const consultantRules = this.buildConsultantRules(this.tasks, []),
-            consultantInstance = new consultant(consultantRules);
+    getConsultant(): Consultant {
+        const consultantInstance = new Consultant(this.tasks);
 
         return consultantInstance;
     }
