@@ -5,8 +5,8 @@ export declare type CommandStateType = {
     argv: any;
 };
 export declare class RunContext {
-    executionQueue: Array<CommandStateType>;
     consultantInstance: Consultant;
+    executionQueue: Array<CommandStateType>;
     constructor(consultantInstance: Consultant);
     enqueueCommand(commandSet: CommandSet, args: string | object): Promise<void>;
     enqueueCommandDirect(commandSet: CommandSet, commandLocation: CommandLocation, state: CommandStateType): void;

@@ -46,38 +46,57 @@ jsmake.task('plugins remove', {
 });
 
 jsmake.task('test', {
-    description: 'Test command',
+    description: 'Test command #1',
     uiHidden: false,
     action: async (argv, stream) => {
-        const pluginName = argv._[0];
+        // TODO why we can't access the parameter w/ argv.info
+        console.dir(argv, { depth: null, colors: true });
+        stream.write(`test #1 - ${argv.values.test.info}`);
+    },
 
-        stream.write(`test - ${pluginName}`);
+    children: {
+        info: {
+            type: 'stringParameter',
+            label: 'Message',
+            description: 'Specifies a custom message',
+            'default': 'http://github.com/eserozvataf/',
+            uiHidden: true,
+            min: 0,
+            max: 1
+        }
     }
 });
 
 jsmake.task('tests first', {
-    description: 'Test command #1',
+    description: 'Test command #2',
     uiHidden: true,
     action: async (argv, stream) => {
-        const pluginName = argv._[0];
+        stream.write(`test #2 - ${argv.info}`);
+    },
 
-        stream.write(`test #1 - ${pluginName}`);
+    children: {
+        info: {
+            type: 'stringParameter',
+            label: 'Message',
+            description: 'Specifies a custom message',
+            'default': 'http://github.com/eserozvataf/',
+            uiHidden: true,
+            min: 0,
+            max: 1
+        }
     }
 });
 
-const util = require('util');
-
-console.log(util.inspect(jsmake.taskRules, { showHidden: false, depth: null }));
 // console.log(jsmake.taskRules.children.tasks);
 // console.log(jsmake.locateNode('plugins add'));
 // console.log(jsmake.tasks.plugins.add);
 // console.log(JSON.stringify(jsmake.buildConsultantRules(jsmake.tasks, []), null, 2));
-// jsmake.exec('tests first hede');
-// process.exit(0);
 
 // jsmake.loadPlugins();
 
-// console.log(JSON.stringify(jsmake.tasks, undefined, 4));
+// console.dir(jsmake.taskRules, { showHidden: false, depth: null, colors: true });
 // process.exit(0);
+
+jsmake.exec('test --info=hede');
 
 export = jsmake;

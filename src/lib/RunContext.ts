@@ -5,12 +5,12 @@ import { TaskException } from './TaskException';
 export type CommandStateType = { command: Command, argv: any };
 
 export class RunContext {
-    executionQueue: Array<CommandStateType>;
     consultantInstance: Consultant;
+    executionQueue: Array<CommandStateType>;
 
     constructor(consultantInstance: Consultant) {
-        this.executionQueue = [];
         this.consultantInstance = consultantInstance;
+        this.executionQueue = [];
     }
 
     async enqueueCommand(commandSet: CommandSet, args: string | object): Promise<void> {
@@ -37,14 +37,14 @@ export class RunContext {
             commandSet,
             commandLocation,
             {
-                command: commandLocation.parent[commandLocation.name],
+                command: commandLocation.instance,
                 argv: argv
             }
         );
     }
 
     enqueueCommandDirect(commandSet: CommandSet, commandLocation: CommandLocation, state: CommandStateType): void {
-        const command = commandLocation.parent[commandLocation.name];
+        const command = commandLocation.instance;
 
         if (this.executionQueue.some(item => item.command === command)) {
             return;
@@ -55,12 +55,14 @@ export class RunContext {
                 const prerequisiteLocation = commandSet.locateNode(prerequisite);
 
                 if (prerequisiteLocation === null) {
-                    throw new Error(`prerequisite ${prerequisite} is not found for task '${command.id}'`);
+                    throw new Error(`prerequisite '${prerequisite}' is not found for task '${command.id}'`);
                 }
 
                 this.enqueueCommandDirect(commandSet, prerequisiteLocation, state);
             }
         }
+
+        // TODO pre and post tasks
 
         // const preTaskName = `pre-${commandLocation.name}`,
         //     postTaskName = `post-${commandLocation.name}`;

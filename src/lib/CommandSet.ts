@@ -152,9 +152,7 @@ export class CommandSet {
     }
 
     getConsultant(): Consultant {
-        const consultantInstance = new Consultant(this.taskRules);
-
-        return consultantInstance;
+        return new Consultant(this.taskRules);
     }
 
     async exec(args: string | object): Promise<RunContext> {
