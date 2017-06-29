@@ -1,4 +1,4 @@
-import consultant = require('consultant');
+import { Consultant } from 'consultant/lib/esm';
 import { Command, CommandSet, CommandLocation } from './CommandSet';
 export declare type CommandStateType = {
     command: Command;
@@ -6,8 +6,8 @@ export declare type CommandStateType = {
 };
 export declare class RunContext {
     executionQueue: Array<CommandStateType>;
-    consultantInstance: consultant;
-    constructor(consultantInstance: consultant);
+    consultantInstance: Consultant;
+    constructor(consultantInstance: Consultant);
     enqueueCommand(commandSet: CommandSet, args: string | object): Promise<void>;
     enqueueCommandDirect(commandSet: CommandSet, commandLocation: CommandLocation, state: CommandStateType): void;
     executeSingle(state: CommandStateType): Promise<void>;

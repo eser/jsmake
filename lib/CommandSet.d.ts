@@ -3,32 +3,34 @@ import { EventEmitter } from 'es6-eventemitter/lib/esm';
 import { RunContext } from './RunContext';
 export declare type CommandActionType = (argv: any, stream: any) => any | Promise<any>;
 export declare type CommandLocation = {
-    parent: object;
-    instance: Command;
+    parent: {
+        [key: string]: any;
+    };
     name: string;
+    instance: any;
 };
 export declare type Command = {
     events: EventEmitter;
-    name: string;
+    label: string;
     description: string | undefined;
     parameters: any[];
     prerequisites: string[];
     action: CommandActionType;
     rules: any;
 };
-export declare const ProxyHandler: {
-    get(target: any, name: any): void;
+export declare const tasksProxyHandler: {
+    get(target: any, name: any): any;
 };
 export declare class CommandSet {
-    tasks: {
+    taskRules: {
         [key: string]: any;
     };
+    tasks: any;
     constructor();
-    locatePath(pathstr: string): CommandLocation | null;
-    locateNode(nodePath: string[]): {
-        parent: any;
-        name: string;
-    };
+    locateNode(nodePath: string): CommandLocation | null;
+    locateNodeDirect(nodePath: string[]): CommandLocation | null;
+    createNode(nodePath: string): CommandLocation;
+    createNodeDirect(nodePath: string[]): CommandLocation;
     addCommand(pathstr: string, command: Command): void;
     getConsultant(): Consultant;
     exec(args: string | object): Promise<RunContext>;

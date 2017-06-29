@@ -1,4 +1,4 @@
-import consultant = require('consultant');
+import { Consultant } from 'consultant/lib/esm';
 import { Command, CommandSet, CommandLocation } from './CommandSet';
 import { TaskException } from './TaskException';
 
@@ -6,9 +6,9 @@ export type CommandStateType = { command: Command, argv: any };
 
 export class RunContext {
     executionQueue: Array<CommandStateType>;
-    consultantInstance: consultant;
+    consultantInstance: Consultant;
 
-    constructor(consultantInstance: consultant) {
+    constructor(consultantInstance: Consultant) {
         this.executionQueue = [];
         this.consultantInstance = consultantInstance;
     }
@@ -27,7 +27,7 @@ export class RunContext {
             throw new Error('enqueueCommand: argv.commandId is undefined');
         }
 
-        const commandLocation = commandSet.locatePath(argv.commandId);
+        const commandLocation = commandSet.locateNode(argv.commandId);
 
         if (commandLocation === null) {
             throw new Error('enqueueCommand: commandLocation is null');
@@ -37,41 +37,41 @@ export class RunContext {
             commandSet,
             commandLocation,
             {
-                command: commandLocation.instance,
+                command: commandLocation.parent[commandLocation.name],
                 argv: argv
             }
         );
     }
 
     enqueueCommandDirect(commandSet: CommandSet, commandLocation: CommandLocation, state: CommandStateType): void {
-        if (this.executionQueue.some(item => item.command === commandLocation.instance)) {
+        const command = commandLocation.parent[commandLocation.name];
+
+        if (this.executionQueue.some(item => item.command === command)) {
             return;
         }
 
-        const command = commandLocation.instance;
-
         if (command.prerequisites !== undefined) {
             for (const prerequisite of command.prerequisites) {
-                const prerequisiteLocation = commandSet.locatePath(prerequisite);
+                const prerequisiteLocation = commandSet.locateNode(prerequisite);
 
                 if (prerequisiteLocation === null) {
-                    throw new Error(`prerequisite ${prerequisite} is not found for task ${command.name}`);
+                    throw new Error(`prerequisite ${prerequisite} is not found for task '${command.id}'`);
                 }
 
                 this.enqueueCommandDirect(commandSet, prerequisiteLocation, state);
             }
         }
 
-        // const preTaskName = `pre-${command.name}`,
-        //     postTaskName = `post-${command.name}`;
+        // const preTaskName = `pre-${commandLocation.name}`,
+        //     postTaskName = `post-${commandLocation.name}`;
 
-        // if (preTaskName in commandSet) {
+        // if (preTaskName in commandLocation.parent) {
         //     this.enqueueCommandDirect(commandSet, preTaskName, state);
         // }
 
         this.executionQueue.push(state);
 
-        // if (postTaskName in commandSet) {
+        // if (postTaskName in commandLocation.parent) {
         //     this.enqueueCommandDirect(commandSet, postTaskName, state);
         // }
     }

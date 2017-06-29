@@ -9,14 +9,14 @@ const reservedWords = [ 'exec' ];
 export type CommandActionType = (argv: any, stream: any) => any | Promise<any>;
 
 export type CommandLocation = {
-    parent: object,
-    instance: Command,
-    name: string
+    parent: { [key: string]: any },
+    name: string,
+    instance: any
 };
 
 export type Command = {
     events: EventEmitter;
-    name: string;
+    label: string;
     description: string | undefined;
     parameters: any[];
     prerequisites: string[];
@@ -24,41 +24,60 @@ export type Command = {
     rules: any;
 };
 
-export const ProxyHandler = {
+export const tasksProxyHandler = {
     get(target, name) {
+        if (target.children !== undefined && name in target.children) {
+            return new Proxy(target.children[name], tasksProxyHandler);
+        }
 
+        return target[name];
     }
 }
 
 export class CommandSet {
-    tasks: { [key: string]: any };
+    taskRules: { [key: string]: any };
+    tasks: any;
 
     constructor() {
-        this.tasks = {
+        this.taskRules = {
             label: 'jsmake',
             strict: true,
 
             children: {}
         };
+
+        this.tasks = new Proxy(this.taskRules, tasksProxyHandler);
     }
 
-    locatePath(pathstr: string): CommandLocation | null {
-        const split = pathstr.split(' ');
+    locateNode(nodePath: string): CommandLocation | null {
+        return this.locateNodeDirect(nodePath.split(' '));
+    }
 
-        let pointer = this.tasks;
+    locateNodeDirect(nodePath: string[]): CommandLocation | null {
+        let pointer = this.taskRules.children,
+            i;
 
-        while (split.length > 1) {
-            // since we checked split.length, it's 100% a string
-            const name = <string>split.shift();
+        const length = nodePath.length - 1;
+
+        for (i = 0; i < length; i++) {
+            const name = nodePath[i];
 
             pointer = pointer[name];
 
             if (pointer === undefined) {
                 return null;
             }
+
+            if (i < length) {
+                if (!('children' in pointer)) {
+                    return null;
+                }
+
+                pointer = pointer.children;
+            }
         }
 
-        const instance = pointer[split[0]];
+        const instance = pointer[nodePath[i]];
 
         if (instance === undefined) {
             return null;
@@ -66,18 +85,23 @@ export class CommandSet {
 
         return {
             parent: pointer,
-            instance: instance,
-            name: split[0]
+            name: nodePath[i],
+            instance: instance
         };
     }
 
-    locateNode(nodePath: string[]) {
-        const split = nodePath.splice(0);
+    createNode(nodePath: string): CommandLocation {
+        return this.createNodeDirect(nodePath.split(' '));
+    }
 
-        let pointer = this.tasks.children;
+    createNodeDirect(nodePath: string[]): CommandLocation {
+        let pointer = this.taskRules.children,
+            i;
 
-        while (split.length > 1) {
-            const name = <string>split.shift();
+        const length = nodePath.length - 1;
+
+        for (i = 0; i < length; i++) {
+            const name = nodePath[i];
 
             if (!(name in pointer)) {
                 pointer[name] = {};
@@ -85,7 +109,7 @@ export class CommandSet {
 
             pointer = pointer[name];
 
-            if (split.length > 0) {
+            if (i < length) {
                 if (!('children' in pointer)) {
                     pointer.children = {};
                 }
@@ -96,7 +120,8 @@ export class CommandSet {
 
         return {
             parent: pointer,
-            name: split[0]
+            name: nodePath[i],
+            instance: pointer[nodePath[i]]
         };
     }
 
@@ -109,24 +134,25 @@ export class CommandSet {
             }
         }
 
-        const targetNode = this.locateNode(split);
+        const targetNode = this.createNodeDirect(split);
+
         targetNode.parent[targetNode.name] = assign(
             {},
-            targetNode.parent[targetNode.name],
+            targetNode.instance,
             {
                 type: Consultant.types.command,
+                aliases: [],
                 id: pathstr,
-                label: command.name,
-                description: command.description,
                 uiHidden: false,
                 helpDetails: true,
                 strict: true
-            }
+            },
+            command
         );
     }
 
     getConsultant(): Consultant {
-        const consultantInstance = new Consultant(this.tasks);
+        const consultantInstance = new Consultant(this.taskRules);
 
         return consultantInstance;
     }
@@ -153,9 +179,9 @@ export class CommandSet {
     //     //     }
 
     //     //     menuItems.push({
-    //     //         name: alignedString([ 0, task.name, 35, task.description ]),
-    //     //         value: task.name,
-    //     //         'short': task.name
+    //     //         name: alignedString([ 0, task.label, 35, task.description ]),
+    //     //         value: task.label,
+    //     //         'short': task.label
     //     //     });
     //     // }
 
@@ -190,7 +216,7 @@ export class CommandSet {
         // TODO list tasks in tree format
 
         // return Object.keys(this.tasks).map(
-        //     (taskKey) => this.tasks[taskKey].name
+        //     (taskKey) => this.tasks[taskKey].label
         // );
 
         return [];
@@ -204,7 +230,7 @@ export class CommandSet {
         //     const task = this.tasks[taskKey];
 
         //     output.push(
-        //         alignedString([ indent, task.name, 35, task.description ])
+        //         alignedString([ indent, task.label, 35, task.description ])
         //     );
 
         //     // TODO

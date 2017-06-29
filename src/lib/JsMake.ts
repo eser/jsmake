@@ -69,15 +69,15 @@ export class JsMake extends CommandSet {
         }
         this.lastDescription = emptyDescription;
 
-        // params[0] as action
-        if (paramCount === 1) {
-            options.prerequisites = [];
-            options.action = params[0];
-        }
         // params[0] as prerequisites, params[1] as action
-        else {
+        if (paramCount >= 2) {
             options.prerequisites = params[0];
             options.action = params[1];
+        }
+        // params[0] as action
+        else if (paramCount >= 1) {
+            options.prerequisites = [];
+            options.action = params[0];
         }
 
         this.addCommand(pathstr, options);
