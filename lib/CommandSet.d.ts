@@ -10,7 +10,6 @@ export declare type CommandLocation = {
     instance: any;
 };
 export declare type Command = {
-    events: EventEmitter;
     label: string;
     description: string | undefined;
     parameters: any[];
@@ -22,9 +21,8 @@ export declare const tasksProxyHandler: {
     get(target: any, name: any): any;
 };
 export declare class CommandSet {
-    taskRules: {
-        [key: string]: any;
-    };
+    events: EventEmitter;
+    taskRules: any;
     tasks: any;
     constructor();
     locateNode(nodePath: string): CommandLocation | null;

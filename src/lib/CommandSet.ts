@@ -15,7 +15,6 @@ export type CommandLocation = {
 };
 
 export type Command = {
-    events: EventEmitter;
     label: string;
     description: string | undefined;
     parameters: any[];
@@ -35,10 +34,13 @@ export const tasksProxyHandler = {
 }
 
 export class CommandSet {
-    taskRules: { [key: string]: any };
+    events: EventEmitter;
+    taskRules: any;
     tasks: any;
 
     constructor() {
+        this.events = new EventEmitter();
+
         this.taskRules = {
             label: 'jsmake',
             strict: true,
@@ -104,7 +106,9 @@ export class CommandSet {
             const name = nodePath[i];
 
             if (!(name in pointer)) {
-                pointer[name] = {};
+                pointer[name] = {
+                    type: Consultant.types.command
+                };
             }
 
             pointer = pointer[name];
@@ -157,7 +161,7 @@ export class CommandSet {
 
     async exec(args: string | object): Promise<RunContext> {
         const consultant = this.getConsultant(),
-            runContext = new RunContext(consultant);
+            runContext = new RunContext(consultant, this.logger);
 
         await runContext.enqueueCommand(this, args);
 

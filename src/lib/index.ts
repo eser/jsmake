@@ -1,14 +1,62 @@
+import { assign } from 'ponyfills/lib/assign';
+import { Consultant } from 'consultant/lib/esm';
 import { JsMake } from './JsMake';
 
 const jsmake = new JsMake();
+
+const defaultParameters = {
+    makefile: {
+        type: Consultant.types.stringParameter,
+        aliases: [ 'f' ],
+        label: 'Makefile',
+        parameter: 'FILE',
+        description: 'Load tasks from FILE',
+        'default': [ 'makefile.js' ],
+        min: 0,
+        max: undefined,
+        validate: (value) => value.length >= 3 || 'minimum 3 chars required'
+    },
+    verbosity: {
+        type: Consultant.types.stringParameter,
+        label: 'Verbosity',
+        description: 'Sets verbosity of log messages [debug, warn, info, error]',
+        'default': 'info',
+        values: [ 'debug', 'warn', 'info', 'error' ],
+        uiHidden: true,
+        min: 0,
+        max: 1
+    },
+    version: {
+        type: Consultant.types.booleanParameter,
+        aliases: [ 'v' ],
+        label: 'Version',
+        description: 'Displays the jsmake version',
+        'default': false,
+        uiHidden: true,
+        min: 0,
+        max: 1
+    },
+    help: {
+        type: Consultant.types.booleanParameter,
+        aliases: [ 'h', '?' ],
+        label: 'Help',
+        description: 'Displays this help message',
+        'default': false,
+        uiHidden: true,
+        min: 0,
+        max: 1
+    }
+};
+
+jsmake.taskRules.children = assign(jsmake.taskRules.children, defaultParameters);
 
 // TODO load plugins, etc.
 jsmake.task('tasks', {
     description: 'Lists defined tasks',
     uiHidden: true,
-    action: (argv, stream) => {
+    action: (argv, logger) => {
         for (const task of jsmake.getTaskTree()) {
-            stream.write(task);
+            logger.info(task);
         }
     }
 });
@@ -24,11 +72,11 @@ jsmake.task('tasks', {
 jsmake.task('plugins add', {
     description: 'Adds a plugin',
     uiHidden: true,
-    action: async (argv, stream) => {
+    action: async (argv, logger) => {
         const pluginName = argv._[0];
 
         if (await jsmake.plugins.install(pluginName)) {
-            stream.write(`plugin successfully added - ${pluginName}`);
+            logger.info(`plugin successfully added - ${pluginName}`);
         }
     }
 });
@@ -36,11 +84,11 @@ jsmake.task('plugins add', {
 jsmake.task('plugins remove', {
     description: 'Removes a plugin',
     uiHidden: true,
-    action: async (argv, stream) => {
+    action: async (argv, logger) => {
         const pluginName = argv._[0];
 
         if (await jsmake.plugins.uninstall(pluginName)) {
-            stream.write(`plugin successfully removed - ${pluginName}`);
+            logger.info(`plugin successfully removed - ${pluginName}`);
         }
     }
 });
@@ -48,10 +96,8 @@ jsmake.task('plugins remove', {
 jsmake.task('test', {
     description: 'Test command #1',
     uiHidden: false,
-    action: async (argv, stream) => {
-        // TODO why we can't access the parameter w/ argv.info
-        console.dir(argv, { depth: null, colors: true });
-        stream.write(`test #1 - ${argv.values.test.info}`);
+    action: async (argv, logger) => {
+        logger.info(`test #1 - ${argv.values.test.info}`);
     },
 
     children: {
@@ -70,8 +116,8 @@ jsmake.task('test', {
 jsmake.task('tests first', {
     description: 'Test command #2',
     uiHidden: true,
-    action: async (argv, stream) => {
-        stream.write(`test #2 - ${argv.info}`);
+    action: async (argv, logger) => {
+        logger.info(`test #2 - ${argv.values.tests.first.info}`);
     },
 
     children: {
@@ -87,16 +133,16 @@ jsmake.task('tests first', {
     }
 });
 
-// console.log(jsmake.taskRules.children.tasks);
-// console.log(jsmake.locateNode('plugins add'));
-// console.log(jsmake.tasks.plugins.add);
-// console.log(JSON.stringify(jsmake.buildConsultantRules(jsmake.tasks, []), null, 2));
+// console.dir(jsmake.locateNode('plugins add'));
+// console.dir(jsmake.tasks.plugins.add);
+// console.dir(JSON.stringify(jsmake.buildConsultantRules(jsmake.tasks, []), null, 2));
 
-// jsmake.loadPlugins();
+jsmake.loadPlugins();
 
 // console.dir(jsmake.taskRules, { showHidden: false, depth: null, colors: true });
 // process.exit(0);
 
-jsmake.exec('test --info=hede');
+// jsmake.exec('test --info=hede');
+// jsmake.exec('tests first --info=hede');
 
 export = jsmake;

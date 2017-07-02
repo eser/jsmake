@@ -1,7 +1,6 @@
-import { EventEmitter } from 'es6-eventemitter/lib/esm';
 import { Maester } from 'maester/lib/esm';
 import { Senior } from 'senior/lib/esm';
-import { assign } from 'ponyfills/lib/esm';
+import { assign } from 'ponyfills/lib/assign';
 import { Command, CommandSet } from './CommandSet';
 import { Utils } from './Utils';
 import pkg = require('../package.json');
@@ -9,18 +8,23 @@ import pkg = require('../package.json');
 const emptyDescription = '';
 
 export class JsMake extends CommandSet {
-    events: EventEmitter;
     logger: Maester;
     plugins: Senior;
     utils: Utils;
     errors: { [key: string]: any };
+
+    outputStream: any;
     lastDescription: string;
 
     constructor() {
         super();
 
-        this.events = new EventEmitter();
+        this.lastDescription = emptyDescription;
+        this.outputStream = process.stdout;
+
         this.logger = new Maester();
+        this.logger.logging.addLogger('stream', 'stream', 'basic', this.outputStream);
+
         this.plugins = new Senior('jsmake');
         this.utils = new Utils();
 
@@ -28,8 +32,6 @@ export class JsMake extends CommandSet {
             unknownCommand: Symbol('unknown command'),
             exception: Symbol('exception thrown')
         };
-
-        this.lastDescription = emptyDescription;
     }
 
     loadPlugins(): void {

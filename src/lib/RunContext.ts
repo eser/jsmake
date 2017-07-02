@@ -1,64 +1,78 @@
 import { Consultant } from 'consultant/lib/esm';
+import { Maester } from 'maester/lib/esm';
 import { Command, CommandSet, CommandLocation } from './CommandSet';
 import { TaskException } from './TaskException';
 
-export type CommandStateType = { command: Command, argv: any };
+export type CommandStateType = {
+    commandSet: CommandSet,
+    commandLocation: CommandLocation,
+    argv: any
+};
+
+export type ExecutionQueueItemType = {
+    commandLocation: CommandLocation,
+    state: CommandStateType
+};
 
 export class RunContext {
     consultantInstance: Consultant;
-    executionQueue: Array<CommandStateType>;
+    logger: Maester;
 
-    constructor(consultantInstance: Consultant) {
+    executionQueue: Array<ExecutionQueueItemType>;
+
+    constructor(consultantInstance: Consultant, logger: Maester) {
         this.consultantInstance = consultantInstance;
+        this.logger = logger;
+
         this.executionQueue = [];
     }
 
     async enqueueCommand(commandSet: CommandSet, args: string | object): Promise<void> {
-        let argv;
+        let consultation;
 
         if (args.constructor === Object) {
-            argv = await this.consultantInstance.fromObject(<object>args);
+            consultation = await this.consultantInstance.fromObject(<object>args);
         }
         else {
-            argv = await this.consultantInstance.fromString(<string>args);
+            consultation = await this.consultantInstance.fromString(<string>args);
         }
 
-        if (argv.commandId === undefined) {
-            throw new Error('enqueueCommand: argv.commandId is undefined');
+        if (consultation.commandId === undefined) {
+            throw new Error('enqueueCommand: consultation.commandId is undefined');
         }
 
-        const commandLocation = commandSet.locateNode(argv.commandId);
+        const commandLocation = commandSet.locateNode(consultation.commandId);
 
         if (commandLocation === null) {
             throw new Error('enqueueCommand: commandLocation is null');
         }
 
         this.enqueueCommandDirect(
-            commandSet,
             commandLocation,
             {
-                command: commandLocation.instance,
-                argv: argv
+                commandSet: commandSet,
+                commandLocation: commandLocation,
+                argv: consultation
             }
         );
     }
 
-    enqueueCommandDirect(commandSet: CommandSet, commandLocation: CommandLocation, state: CommandStateType): void {
+    enqueueCommandDirect(commandLocation: CommandLocation, state: CommandStateType): void {
         const command = commandLocation.instance;
 
-        if (this.executionQueue.some(item => item.command === command)) {
+        if (this.executionQueue.some(item => item.commandLocation.instance === command)) {
             return;
         }
 
         if (command.prerequisites !== undefined) {
             for (const prerequisite of command.prerequisites) {
-                const prerequisiteLocation = commandSet.locateNode(prerequisite);
+                const prerequisiteLocation = state.commandSet.locateNode(prerequisite);
 
                 if (prerequisiteLocation === null) {
                     throw new Error(`prerequisite '${prerequisite}' is not found for task '${command.id}'`);
                 }
 
-                this.enqueueCommandDirect(commandSet, prerequisiteLocation, state);
+                this.enqueueCommandDirect(prerequisiteLocation, state);
             }
         }
 
@@ -71,47 +85,55 @@ export class RunContext {
         //     this.enqueueCommandDirect(commandSet, preTaskName, state);
         // }
 
-        this.executionQueue.push(state);
+        this.executionQueue.push({
+            commandLocation: commandLocation,
+            state: state
+        });
 
         // if (postTaskName in commandLocation.parent) {
         //     this.enqueueCommandDirect(commandSet, postTaskName, state);
         // }
     }
 
-    async executeSingle(state: CommandStateType): Promise<void> {
+    async executeSingle(executionQueueItem: ExecutionQueueItemType): Promise<void> {
         let result;
 
-        const command = state.command;
+        const command = executionQueueItem.commandLocation.instance,
+            state = executionQueueItem.state;
 
         try {
             if (command.action !== undefined || command.prerequisites.length === 0) {
-                const ret = command.action(state.argv, process.stdout);
+                const ret = command.action(
+                    state.argv,
+                    this.logger
+                );
 
                 if (ret instanceof Promise) {
                     await ret;
                 }
             }
 
-            // command.events.emit('done');
+            state.commandSet.events.emit('done', state);
 
             result = Promise.resolve();
         }
         catch (ex) {
-            // command.events.emit('error', ex);
+            state.commandSet.events.emit('error', ex, state);
 
+            // TODO wrap with TaskException
             result = Promise.reject(ex);
         }
 
-        // command.events.emit('complete');
+        state.commandSet.events.emit('complete', state);
 
         return result;
     }
 
     async execute(): Promise<void> {
         while (this.executionQueue.length > 0) {
-            const state = <CommandStateType>this.executionQueue.shift();
+            const executionQueueItem = <ExecutionQueueItemType>this.executionQueue.shift();
 
-            await this.executeSingle(state);
+            await this.executeSingle(executionQueueItem);
         }
     }
 }

@@ -48,14 +48,14 @@
     "jsmake": "./bin/jsmake"
   },
   "dependencies": {
-    "cofounder": "^0.8.0",
+    "cofounder": "^0.8.1",
     "colors": "^1.1.2",
-    "consultant": "^0.8.0",
-    "es6-eventemitter": "^0.8.0",
-    "maester": "^0.8.0",
+    "consultant": "^0.8.1",
+    "es6-eventemitter": "^0.8.1",
+    "maester": "^0.8.1",
     "semver": "^5.3.0",
-    "senior": "^0.8.0",
-    "ponyfills": "^0.8.0",
+    "senior": "^0.8.1",
+    "ponyfills": "^0.8.1",
     "update-notifier": "^2.2.0"
   },
   "devDependencies": {

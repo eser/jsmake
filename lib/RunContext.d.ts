@@ -1,16 +1,23 @@
 import { Consultant } from 'consultant/lib/esm';
-import { Command, CommandSet, CommandLocation } from './CommandSet';
+import { Maester } from 'maester/lib/esm';
+import { CommandSet, CommandLocation } from './CommandSet';
 export declare type CommandStateType = {
-    command: Command;
+    commandSet: CommandSet;
+    commandLocation: CommandLocation;
     argv: any;
+};
+export declare type ExecutionQueueItemType = {
+    commandLocation: CommandLocation;
+    state: CommandStateType;
 };
 export declare class RunContext {
     consultantInstance: Consultant;
-    executionQueue: Array<CommandStateType>;
-    constructor(consultantInstance: Consultant);
+    logger: Maester;
+    executionQueue: Array<ExecutionQueueItemType>;
+    constructor(consultantInstance: Consultant, logger: Maester);
     enqueueCommand(commandSet: CommandSet, args: string | object): Promise<void>;
-    enqueueCommandDirect(commandSet: CommandSet, commandLocation: CommandLocation, state: CommandStateType): void;
-    executeSingle(state: CommandStateType): Promise<void>;
+    enqueueCommandDirect(commandLocation: CommandLocation, state: CommandStateType): void;
+    executeSingle(executionQueueItem: ExecutionQueueItemType): Promise<void>;
     execute(): Promise<void>;
 }
 export default RunContext;
