@@ -1,7 +1,7 @@
 import path = require('path');
 import updateNotifier = require('update-notifier');
-import consultant = require('consultant');
-import { assign } from 'ponyfills';
+import { assign } from 'ponyfills/lib/assign';
+import { Consultant } from 'consultant/lib/esm';
 import * as jsmake from './';
 import * as pkg from '../package.json';
 

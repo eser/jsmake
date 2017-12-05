@@ -1,6 +1,6 @@
+import { assign } from 'ponyfills/lib/assign';
+import { EventEmitter } from 'es6-eventemitter/lib/EventEmitter';
 import { Consultant } from 'consultant/lib/esm';
-import { EventEmitter } from 'es6-eventemitter/lib/esm';
-import { assign } from 'ponyfills/lib/esm';
 import { RunContext } from './RunContext';
 import { alignedString } from './utils/alignedString';
 

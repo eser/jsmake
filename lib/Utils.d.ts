@@ -1,5 +1,7 @@
-import { CoFounder } from 'cofounder/lib/esm';
-export declare class Utils extends CoFounder {
+export declare class Utils {
+    fs: any;
+    json: any;
+    os: any;
     constructor();
     packageJsonVersionBump(filepath: any, type?: string): Promise<string>;
     npmPublish(): void;

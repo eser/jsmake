@@ -1,10 +1,16 @@
 import fs = require('fs');
 import semver = require('semver');
-import { CoFounder } from 'cofounder/lib/esm';
+import * as cofounder from 'cofounder/lib/esm';
 
-export class Utils extends CoFounder {
+export class Utils {
+    fs: any;
+    json: any;
+    os: any;
+
     constructor() {
-        super();
+        this.fs = cofounder.fs;
+        this.json = cofounder.json;
+        this.os = cofounder.os;
     }
 
     async packageJsonVersionBump(filepath, type = 'patch'): Promise<string> {

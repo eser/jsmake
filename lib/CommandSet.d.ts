@@ -1,5 +1,5 @@
+import { EventEmitter } from 'es6-eventemitter/lib/EventEmitter';
 import { Consultant } from 'consultant/lib/esm';
-import { EventEmitter } from 'es6-eventemitter/lib/esm';
 import { RunContext } from './RunContext';
 export declare type CommandActionType = (argv: any, stream: any) => any | Promise<any>;
 export declare type CommandLocation = {

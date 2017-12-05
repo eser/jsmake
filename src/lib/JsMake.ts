@@ -1,6 +1,6 @@
-import { Maester } from 'maester/lib/esm';
-import { Senior } from 'senior/lib/esm';
 import { assign } from 'ponyfills/lib/assign';
+import { Maester } from 'maester/lib/Maester';
+import { Senior } from 'senior/lib/esm';
 import { Command, CommandSet } from './CommandSet';
 import { Utils } from './Utils';
 import pkg = require('../package.json');

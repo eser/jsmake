@@ -1,4 +1,4 @@
-import { Maester } from 'maester/lib/esm';
+import { Maester } from 'maester/lib/Maester';
 import { Senior } from 'senior/lib/esm';
 import { Command, CommandSet } from './CommandSet';
 import { Utils } from './Utils';

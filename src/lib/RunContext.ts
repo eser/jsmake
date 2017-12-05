@@ -1,5 +1,5 @@
 import { Consultant } from 'consultant/lib/esm';
-import { Maester } from 'maester/lib/esm';
+import { Maester } from 'maester/lib/Maester';
 import { Command, CommandSet, CommandLocation } from './CommandSet';
 import { TaskException } from './TaskException';
 
