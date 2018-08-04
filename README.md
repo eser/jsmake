@@ -106,6 +106,10 @@ Dependencies are automatically handled by `npm`, however you might want to take 
 
 See [GitHub Projects](https://github.com/eserozvataf/jsmake/projects) for more.
 
+### User Story Mapping
+
+![User Story Mapping for jsmake packages](docs/usm.png)
+
 
 ## Requirements
 
