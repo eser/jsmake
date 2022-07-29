@@ -6,6 +6,12 @@
 [![license][license-image]][license-url]
 
 
+## Update (July 2022)
+
+DEPRECATED in favor of [hex](https://github.com/eserozvataf/hex).
+See https://github.com/eserozvataf/hex for details.
+
+
 ## What is the jsmake?
 
 jsmake is a task tool which runs user-defined tasks declared in `makefile.js`.
